@@ -9,6 +9,7 @@ edition = "2021"
 dioxus = { version = "0.4.3" }
 dioxus-logger = "0.4.1"
 dioxus-web = { version = "0.4.3" }
+itertools = "0.12.1"
 log = "0.4.21"
 manganis = "0.2.1"
 reqwest = "0.12.1"
