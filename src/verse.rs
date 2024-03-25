@@ -54,6 +54,10 @@ impl Bible {
         }
     }
 
+    pub fn get_current_chapter(&self) -> Option<&Chapter> {
+        self.chapters.first()
+    }
+
     pub fn get_chapter(&self, chapter_ref: &str) -> Option<&Chapter> {
         match self
             .chapters
@@ -79,39 +83,80 @@ impl Bible {
     }
 
     pub fn to_chapters(verses: Vec<Verse>) -> Vec<Chapter> {
-        let extra_verses = verses.clone();
-        debug!("Attempting to convert to chapters");
-        verses
-            .iter()
-            .group_by(|verse| verse.get_chapter())
-            .into_iter()
-            .map(|(chapter_ref, verses)| {
-                let verses: Vec<Verse> = verses.cloned().collect();
-                let first_verse = verses.first().unwrap();
+        let mut chapters = Vec::new();
+        let mut verses_by_chapter = verses.into_iter().group_by(|verse| verse.get_chapter());
 
-                Chapter {
-                    r#ref: chapter_ref,
-                    book: first_verse.book.clone(),
-                    chapter: first_verse.chapter.clone(),
-                    verses,
-                    text: extra_verses
-                        .iter()
-                        .map(|v| format!("{} {}", v.verse_num, v.text.clone()))
-                        .collect::<Vec<_>>()
-                        .join(" "),
-                    events: extra_verses
-                        .iter()
-                        .flat_map(|v| v.events.clone())
-                        .unique()
-                        .collect(),
-                    entities: extra_verses
-                        .iter()
-                        .flat_map(|v| v.entities.clone())
-                        .unique()
-                        .collect(),
+        for (chapter_ref, verses) in &verses_by_chapter {
+            let verses: Vec<_> = verses.collect();
+            let first_verse = verses.first().unwrap();
+
+            let chapter = Chapter {
+                r#ref: chapter_ref.to_string(),
+                book: first_verse.book.clone(),
+                chapter: first_verse.chapter.clone(),
+                verses: verses.clone(),
+                text: verses
+                    .iter()
+                    .map(|v| format!("{} {}", v.verse_num, v.text))
+                    .collect::<Vec<_>>()
+                    .join(" "),
+                events: verses
+                    .iter()
+                    .flat_map(|v| v.events.iter().cloned())
+                    .unique()
+                    .collect(),
+                entities: verses
+                    .iter()
+                    .flat_map(|v| v.entities.iter().cloned())
+                    .unique()
+                    .collect(),
+            };
+
+            chapters.push(chapter);
+        }
+
+        chapters
+    }
+    pub fn current_chapter(&self) -> Option<&Chapter> {
+        self.chapters.first()
+    }
+
+    pub fn next_chapter(&mut self) {
+        if let Some(current_chapter) = self.current_chapter() {
+            if let Some(index) = self
+                .chapters
+                .iter()
+                .position(|chapter| chapter.r#ref == current_chapter.r#ref)
+            {
+                if index < self.chapters.len() - 1 {
+                    self.chapters.rotate_left(1);
                 }
-            })
-            .collect()
+            }
+        }
+    }
+
+    pub fn previous_chapter(&mut self) {
+        if let Some(current_chapter) = self.current_chapter() {
+            if let Some(index) = self
+                .chapters
+                .iter()
+                .position(|chapter| chapter.r#ref == current_chapter.r#ref)
+            {
+                if index > 0 {
+                    self.chapters.rotate_right(1);
+                }
+            }
+        }
+    }
+
+    pub fn go_to_chapter(&mut self, chapter_ref: &str) {
+        if let Some(index) = self
+            .chapters
+            .iter()
+            .position(|chapter| chapter.r#ref == chapter_ref)
+        {
+            self.chapters.rotate_left(index);
+        }
     }
 }
 
@@ -124,6 +169,7 @@ pub async fn fetch_verses_from_url(url: &str) -> Option<Bible> {
                     Ok(body) => match serde_json::from_str::<Vec<Verse>>(&body) {
                         Ok(verses) => {
                             let chapters = Bible::to_chapters(verses);
+                            debug!("Chapters: {:?}", chapters);
                             Some(Bible {
                                 translation: "ESV".to_string(),
                                 chapters,
