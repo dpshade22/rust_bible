@@ -1,6 +1,6 @@
 use anyhow::{Context, Result};
 use itertools::Itertools;
-use log::{debug, error};
+use log::debug;
 use serde::Deserialize;
 use serde_json;
 
@@ -48,42 +48,58 @@ impl Chapter {
 pub struct Bible {
     pub translation: String,
     pub chapters: Vec<Chapter>,
+    pub keyword_search_chapters: Option<Vec<Chapter>>,
 }
 
 impl Bible {
-    pub fn new(translation: String, verses: Vec<Verse>) -> Self {
-        let chapters = Bible::to_chapters(verses);
+    // pub fn new(translation: String, verses: Vec<Verse>) -> Self {
+    //     let chapters = Bible::to_chapters(verses);
 
-        Bible {
-            translation,
-            chapters,
-        }
-    }
+    //     Bible {
+    //         translation,
+    //         chapters,
+    //         keyword_search_chapters: None,
+    //     }
+    // }
 
-    pub fn get_chapter_by_ref(&self, chapter_ref: &str) -> Option<&Chapter> {
-        match self
-            .chapters
-            .iter()
-            .find(|&chapter| chapter.r#ref == chapter_ref)
-        {
-            Some(chapter) => Some(chapter),
-            None => None,
-        }
-    }
+    // pub fn get_chapter_by_ref(&self, chapter_ref: &str) -> Option<&Chapter> {
+    //     match self
+    //         .chapters
+    //         .iter()
+    //         .find(|&chapter| chapter.r#ref == chapter_ref)
+    //     {
+    //         Some(chapter) => Some(chapter),
+    //         None => None,
+    //     }
+    // }
 
-    pub fn search_by_keyword(&self, word: &str) -> Vec<Verse> {
-        let search_word = format!(" {} ", word.to_lowercase());
-        self.chapters
-            .iter()
-            .flat_map(|chapter| chapter.verses.iter())
-            .filter(|verse| verse.text.to_lowercase().contains(&search_word))
-            .cloned()
-            .collect()
-    }
+    // pub fn search_by_keyword(&self, word: &str) -> Vec<Verse> {
+    //     let search_word = format!(" {} ", word.to_lowercase());
+    //     self.chapters
+    //         .iter()
+    //         .flat_map(|chapter| chapter.verses.iter())
+    //         .filter(|verse| verse.text.to_lowercase().contains(&search_word))
+    //         .cloned()
+    //         .collect()
+    // }
+
+    // pub fn chapters_by_keyword(&mut self, word: &str) {
+    //     let search_word = format!(" {} ", word.to_lowercase());
+
+    //     let verses = self
+    //         .chapters
+    //         .iter()
+    //         .flat_map(|chapter| chapter.verses.iter())
+    //         .filter(|verse| verse.text.to_lowercase().contains(&search_word))
+    //         .cloned()
+    //         .collect();
+
+    //     self.keyword_search_chapters = Some(Bible::to_chapters(verses))
+    // }
 
     pub fn to_chapters(verses: Vec<Verse>) -> Vec<Chapter> {
         let mut chapters = Vec::new();
-        let mut verses_by_chapter = verses.into_iter().group_by(|verse| verse.get_chapter());
+        let verses_by_chapter = verses.into_iter().group_by(|verse| verse.get_chapter());
 
         for (chapter_ref, verses) in &verses_by_chapter {
             let verses: Vec<_> = verses.collect();
@@ -147,15 +163,15 @@ impl Bible {
         }
     }
 
-    pub fn go_to_chapter(&mut self, chapter_ref: &str) {
-        if let Some(index) = self
-            .chapters
-            .iter()
-            .position(|chapter| chapter.r#ref == chapter_ref)
-        {
-            self.chapters.rotate_left(index);
-        }
-    }
+    // pub fn go_to_chapter(&mut self, chapter_ref: &str) {
+    //     if let Some(index) = self
+    //         .chapters
+    //         .iter()
+    //         .position(|chapter| chapter.r#ref == chapter_ref)
+    //     {
+    //         self.chapters.rotate_left(index);
+    //     }
+    // }
 }
 
 pub async fn fetch_verses_from_url(url: &str) -> Result<Bible> {
@@ -174,6 +190,7 @@ pub async fn fetch_verses_from_url(url: &str) -> Result<Bible> {
         Ok(Bible {
             translation: "ESV".to_string(),
             chapters,
+            keyword_search_chapters: None,
         })
     } else {
         Err(anyhow::anyhow!(
