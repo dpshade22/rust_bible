@@ -1,6 +1,6 @@
+use anyhow::{Context, Result};
 use itertools::Itertools;
 use log::{debug, error};
-use reqwest;
 use serde::Deserialize;
 use serde_json;
 
@@ -38,6 +38,12 @@ pub struct Chapter {
     pub entities: Vec<String>,
 }
 
+impl Chapter {
+    pub fn get_pretty_chapter(&self) -> String {
+        format!("{} {}", self.book, self.chapter)
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct Bible {
     pub translation: String,
@@ -54,11 +60,7 @@ impl Bible {
         }
     }
 
-    pub fn get_current_chapter(&self) -> Option<&Chapter> {
-        self.chapters.first()
-    }
-
-    pub fn get_chapter(&self, chapter_ref: &str) -> Option<&Chapter> {
+    pub fn get_chapter_by_ref(&self, chapter_ref: &str) -> Option<&Chapter> {
         match self
             .chapters
             .iter()
@@ -71,15 +73,12 @@ impl Bible {
 
     pub fn search_by_keyword(&self, word: &str) -> Vec<Verse> {
         let search_word = format!(" {} ", word.to_lowercase());
-        let filtered_verses = self
-            .chapters
+        self.chapters
             .iter()
             .flat_map(|chapter| chapter.verses.iter())
             .filter(|verse| verse.text.to_lowercase().contains(&search_word))
             .cloned()
-            .collect();
-
-        filtered_verses
+            .collect()
     }
 
     pub fn to_chapters(verses: Vec<Verse>) -> Vec<Chapter> {
@@ -117,34 +116,33 @@ impl Bible {
 
         chapters
     }
-    pub fn current_chapter(&self) -> Option<&Chapter> {
+
+    pub fn get_current_chapter(&self) -> Option<&Chapter> {
         self.chapters.first()
     }
 
     pub fn next_chapter(&mut self) {
-        if let Some(current_chapter) = self.current_chapter() {
+        if let Some(current_chapter) = self.get_current_chapter() {
             if let Some(index) = self
                 .chapters
                 .iter()
                 .position(|chapter| chapter.r#ref == current_chapter.r#ref)
             {
-                if index < self.chapters.len() - 1 {
-                    self.chapters.rotate_left(1);
-                }
+                debug!("Next chapter index: {index}");
+                self.chapters.rotate_left(1);
             }
         }
     }
 
     pub fn previous_chapter(&mut self) {
-        if let Some(current_chapter) = self.current_chapter() {
+        if let Some(current_chapter) = self.get_current_chapter() {
             if let Some(index) = self
                 .chapters
                 .iter()
                 .position(|chapter| chapter.r#ref == current_chapter.r#ref)
             {
-                if index > 0 {
-                    self.chapters.rotate_right(1);
-                }
+                debug!("Previous chapter index: {index}");
+                self.chapters.rotate_right(1);
             }
         }
     }
@@ -160,39 +158,27 @@ impl Bible {
     }
 }
 
-pub async fn fetch_verses_from_url(url: &str) -> Option<Bible> {
-    match reqwest::get(url).await {
-        Ok(response) => {
-            debug!("Response: {:?}", response);
-            if response.status().is_success() {
-                match response.text().await {
-                    Ok(body) => match serde_json::from_str::<Vec<Verse>>(&body) {
-                        Ok(verses) => {
-                            let chapters = Bible::to_chapters(verses);
-                            debug!("Chapters: {:?}", chapters);
-                            Some(Bible {
-                                translation: "ESV".to_string(),
-                                chapters,
-                            })
-                        }
-                        Err(err) => {
-                            error!("Error deserializing JSON: {}", err);
-                            None
-                        }
-                    },
-                    Err(err) => {
-                        error!("Error retrieving response body: {}", err);
-                        None
-                    }
-                }
-            } else {
-                error!("Request failed with status: {}", response.status());
-                None
-            }
-        }
-        Err(err) => {
-            error!("Request failed with error: {}", err);
-            None
-        }
+pub async fn fetch_verses_from_url(url: &str) -> Result<Bible> {
+    let response = reqwest::get(url).await.context("Failed to send request")?;
+
+    if response.status().is_success() {
+        let body = response
+            .text()
+            .await
+            .context("Failed to read response body")?;
+
+        let verses = serde_json::from_str::<Vec<Verse>>(&body).context("Failed to parse JSON")?;
+
+        let chapters = Bible::to_chapters(verses);
+
+        Ok(Bible {
+            translation: "ESV".to_string(),
+            chapters,
+        })
+    } else {
+        Err(anyhow::anyhow!(
+            "Request failed with status: {}",
+            response.status()
+        ))
     }
 }
