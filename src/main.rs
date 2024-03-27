@@ -94,7 +94,7 @@ fn App() -> Element {
                 }
             }
             div {
-                class: "flex-1 overflow-y-auto",
+                class: "flex-1 max-h-screen overflow-y-auto",
                 div {
                     class: "px-4 py-6 md:px-6 md:py-12 lg:py-16",
                     div {
@@ -112,13 +112,14 @@ fn App() -> Element {
                         // }
                         hr {}
                         div {
-                            class: "space-y-4 prose prose-gray max-w-none",
+                            class: "space-y-4 prose prose-gray max-w-prose",
                                 span {
                                     if let Some(bible) = bible() {
                                         if let Some(chapter) = bible.get_current_chapter() {
                                             {chapter.verses.iter().map(|verse| rsx!(
                                                 span {
-                                                    dangerous_inner_html: format_args!("<b>{}</b> {} ", verse.verse_num, verse.text),
+                                                    class: "text-center",
+                                                    dangerous_inner_html: format_args!("<b>{}</b> {} <br />", verse.verse_num, verse.text),
                                                     " "
                                                 }
                                             ))}
