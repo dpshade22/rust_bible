@@ -112,7 +112,7 @@ impl Bible {
                 verses: verses.clone(),
                 text: verses
                     .iter()
-                    .map(|v| format!("{} {}", v.verse_num, v.text))
+                    .map(|v| format!("{}", v.text))
                     .collect::<Vec<_>>()
                     .join(" "),
                 events: verses
@@ -163,15 +163,23 @@ impl Bible {
         }
     }
 
-    // pub fn go_to_chapter(&mut self, chapter_ref: &str) {
-    //     if let Some(index) = self
-    //         .chapters
-    //         .iter()
-    //         .position(|chapter| chapter.r#ref == chapter_ref)
-    //     {
-    //         self.chapters.rotate_left(index);
-    //     }
-    // }
+    pub fn get_unique_books(&self) -> Vec<String> {
+        self.chapters
+            .iter()
+            .map(|chapter| chapter.book.clone())
+            .unique()
+            .collect()
+    }
+
+    pub fn go_to_chapter(&mut self, chapter_ref: &str) {
+        if let Some(index) = self
+            .chapters
+            .iter()
+            .position(|chapter| chapter.r#ref == chapter_ref)
+        {
+            self.chapters.rotate_left(index);
+        }
+    }
 }
 
 pub async fn fetch_verses_from_url(url: &str) -> Result<Bible> {
