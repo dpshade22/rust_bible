@@ -1,13 +1,13 @@
 #![allow(non_snake_case)]
-mod verse;
-// use dioxus::prelude::*;
-use dioxus_lib::prelude::*;
+
+use dioxus::prelude::*;
 use log::debug;
 use verse::{fetch_verses_from_url, Bible};
 
+mod verse;
 fn main() {
     // Urls are relative to your Cargo.toml file
-    const _TAILWIND_URL: &str = manganis::mg!(file("./public/tailwind.css"));
+    const _TAILWIND_URL: &str = manganis::mg!(file("public/tailwind.css"));
 
     wasm_logger::init(wasm_logger::Config::default());
     dioxus_web::launch::launch(App, vec![], Default::default());
@@ -62,35 +62,54 @@ fn App() -> Element {
     });
 
     rsx! {
+    div {
+        // class: "flex w-full bg-gray-100/40",
+        display: "flex",
+        flex_direction: "row",
         div {
-            // class: "flex w-full bg-gray-100/40",
-            display: "flex",
-            flex_direction: "row",
-            div {
-                class: "flex flex-col  border-r bg-gray-100/40 w-[250px] lg:block max-h-screen overflow-y-auto ",
-                nav {
-                    class: "flex flex-col flex-1",
-                    div {
-                        class: "py-2 md:py-4 lg:py-2",
-                        h1 {
-                            class: "flex justify-center items-center space-x-4 text-xl font-semibold",
-                            "Books"
-                        }
-                        hr {}
+            class: "flex flex-col  border-r bg-gray-100/40 w-[250px] lg:block max-h-screen overflow-y-auto ",
+            nav {
+                class: "flex flex-col flex-1",
+                div {
+                    class: "py-2 md:py-4 lg:py-2",
+                    h1 {
+                        class: "flex justify-center items-center space-x-4 text-xl font-semibold",
+                        "Books"
                     }
-                    div {
-                        class: "flex-1 grid items-start px-4 py-2 text-sm font-medium",
-                        for book in unique_books.iter() {
+                    hr {}
+                }
+                div {
+                    class: "flex-1 grid items-start px-4 py-2 text-sm font-medium",
+                    if let Some(some_bible) = bible() {
+                        for book in unique_books() {
                             button {
                                 class: "block px-4 py-2 rounded-md hover:bg-gray-200",
-                                // onclick: move |_| {
-                                //     let book_clone = book.clone();
+                                onclick: move |_| {
+                                    match bible() {
+                                        Some(curr_bible) => {
+                                            debug!("{}", &book);
+                                            let chapter_ref = curr_bible.chapters
+                                                .iter()
+                                                .find(|chapter| &chapter.book == &book)
+                                                .map(|chapter| chapter.r#ref.as_str())
+                                                .map(|s| s.to_string());
 
-                                // },
+                                            if let Some(chapter_ref) = chapter_ref {
+                                                let mut new_bible = curr_bible.clone();
+                                                new_bible.go_to_chapter(&chapter_ref);
+                                                current_chapter_text.set(new_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
+                                                current_chapter.set(new_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
+                                                bible.set(Some(new_bible));
+                                            }
+                                        }
+                                        None => {debug!("{}", book);}
+                                    }
+                                },
                                 "{book}"
                             }
                         }
                     }
+                    },
                 }
             }
             div {
@@ -103,13 +122,6 @@ fn App() -> Element {
                             class: "text-4xl font-extrabold tracking-tight lg:text-5xl",
                             "{current_chapter}"
                         }
-                        // div {
-                        //     class: "space-y-4 not-prose",
-                        //     p {
-                        //         class: "text-gray-500 dark:text-gray-400",
-                        //         // "The Creation of the World"
-                        //     }
-                        // }
                         hr {}
                         div {
                             class: "space-y-4 prose prose-gray max-w-prose",
@@ -170,6 +182,5 @@ fn App() -> Element {
                 }
             }
         }
-
     }
 }
