@@ -1,52 +1,186 @@
 #![allow(non_snake_case)]
-mod verse;
-use dioxus::prelude::*;
-use log::{debug, error};
-use verse::{fetch_verses_from_url, Verses};
 
+use dioxus::prelude::*;
+use log::debug;
+use verse::{fetch_verses_from_url, Bible};
+
+mod verse;
 fn main() {
-    dioxus_web::launch(App);
+    // Urls are relative to your Cargo.toml file
+    const _TAILWIND_URL: &str = manganis::mg!(file("public/tailwind.css"));
+
+    wasm_logger::init(wasm_logger::Config::default());
+    dioxus_web::launch::launch(App, vec![], Default::default());
 }
 
-fn App(cx: Scope) -> Element {
-    let all_verses: &UseState<Verses> = use_state(cx, || Verses { verses: Vec::new() });
-    let current_chapter: &UseState<String> = use_state(cx, || "Gen.1".to_string());
-    let current_chapter_text: &UseState<String> = use_state(cx, || "".to_string());
+#[component]
+fn App() -> Element {
+    let mut bible: Signal<Option<Bible>> = use_signal(|| None);
+    let mut current_chapter = use_signal(|| "".to_string());
+    let mut current_chapter_text = use_signal(|| "".to_string());
+    let mut unique_books = use_signal(|| vec![]);
 
-    let _fetch_verses = use_future(cx, (), |_| {
-        let all_verses = all_verses.to_owned();
-        let current_chapter = current_chapter.to_owned();
-        let current_chapter_text = current_chapter_text.to_owned();
+    // let mut search_keyword = use_signal(|| "".to_string());
 
-        async move {
-            if let Some(fetched_verses) = fetch_verses_from_url(
-                "https://arweave.net/daKtqqHpLRnAWCNEWY8Q92NwSyJxWbm7WFDE3ut_BuM",
-            )
-            .await
-            {
-                all_verses.set(fetched_verses.clone());
-                current_chapter_text.set({
-                    fetched_verses
-                        .verses
-                        .iter()
-                        .filter(|verse| verse.get_chapter() == current_chapter.get().to_string())
-                        .fold("".to_string(), |acc, v| {
-                            debug!("Hi");
-                            format!("{} {}", acc, v.text)
-                        })
-                });
-            }
+    // let handle_search = move |_| {
+    //     if let Some(mut curr_bible) = bible() {
+    //         let keyword = search_keyword();
+    //         curr_bible.chapters_by_keyword(&keyword);
+
+    //         if let Some(chapters) = curr_bible.keyword_search_chapters {
+    //             if chapters.len() != 0 {
+    //                 let first_chapter = chapters.first().unwrap();
+    //                 current_chapter_text.set(first_chapter.text.clone());
+    //                 current_chapter.set(first_chapter.get_pretty_chapter());
+    //             }
+    //         }
+    //     }
+    // };
+
+    use_future(move || async move {
+        if let Ok(fetched_bible) =
+            fetch_verses_from_url("https://arweave.net/daKtqqHpLRnAWCNEWY8Q92NwSyJxWbm7WFDE3ut_BuM")
+                .await
+        {
+            bible.set(Some(fetched_bible.clone()));
+            current_chapter.set(
+                fetched_bible
+                    .get_current_chapter()
+                    .map_or("Chapter title not found...".to_string(), |chapter| {
+                        chapter.get_pretty_chapter()
+                    }),
+            );
+            current_chapter_text.set(
+                fetched_bible
+                    .get_current_chapter()
+                    .map_or("Chapter text not found...".to_string(), |chapter| {
+                        chapter.text.clone()
+                    }),
+            );
+            unique_books.set(fetched_bible.get_unique_books());
         }
     });
 
-    // let chapters = all_verses.aggregate_by_chapter().iter().map(|(x, y)| x);
-
-    cx.render(rsx! {
+    rsx! {
+    div {
+        // class: "flex w-full bg-gray-100/40",
+        display: "flex",
+        flex_direction: "row",
         div {
-            h1 { "Bible Verses" }
-            ul {
-                "{current_chapter_text}"
+            class: "flex flex-col  border-r bg-gray-100/40 w-[250px] lg:block max-h-screen overflow-y-auto ",
+            nav {
+                class: "flex flex-col flex-1",
+                div {
+                    class: "py-2 md:py-4 lg:py-2",
+                    h1 {
+                        class: "flex justify-center items-center space-x-4 text-xl font-semibold",
+                        "Books"
+                    }
+                    hr {}
+                }
+                div {
+                    class: "flex-1 grid items-start px-4 py-2 text-sm font-medium",
+                    if let Some(some_bible) = bible() {
+                        for book in unique_books() {
+                            button {
+                                class: "block px-4 py-2 rounded-md hover:bg-gray-200",
+                                onclick: move |_| {
+                                    match bible() {
+                                        Some(curr_bible) => {
+                                            debug!("{}", &book);
+                                            let chapter_ref = curr_bible.chapters
+                                                .iter()
+                                                .find(|chapter| &chapter.book == &book)
+                                                .map(|chapter| chapter.r#ref.as_str())
+                                                .map(|s| s.to_string());
+
+                                            if let Some(chapter_ref) = chapter_ref {
+                                                let mut new_bible = curr_bible.clone();
+                                                new_bible.go_to_chapter(&chapter_ref);
+                                                current_chapter_text.set(new_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
+                                                current_chapter.set(new_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
+                                                bible.set(Some(new_bible));
+                                            }
+                                        }
+                                        None => {debug!("{}", book);}
+                                    }
+                                },
+                                "{book}"
+                            }
+                        }
+                    }
+                    },
+                }
+            }
+            div {
+                class: "flex-1 max-h-screen overflow-y-auto",
+                div {
+                    class: "px-4 py-6 md:px-6 md:py-12 lg:py-16",
+                    div {
+                        class: "space-y-6 prose prose-gray max-w-6xl mx-auto",
+                        h1 {
+                            class: "text-4xl font-extrabold tracking-tight lg:text-5xl",
+                            "{current_chapter}"
+                        }
+                        hr {}
+                        div {
+                            class: "space-y-4 prose prose-gray max-w-prose",
+                                span {
+                                    if let Some(bible) = bible() {
+                                        if let Some(chapter) = bible.get_current_chapter() {
+                                            {chapter.verses.iter().map(|verse| rsx!(
+                                                span {
+                                                    class: "text-center",
+                                                    dangerous_inner_html: format_args!("<b>{}</b> {} <br />", verse.verse_num, verse.text),
+                                                    " "
+                                                }
+                                            ))}
+                                        }
+                                    }
+                                }
+
+                        }
+                    }
+                }
+                div {
+                    class: "fixed bottom-0 left-250 m-4",
+                    button {
+                        class: "px-4 py-2 text-black bg-slate-300 rounded",
+                        onclick: move |_| {
+                            match bible() {
+                                Some(mut curr_bible) => {
+                                    curr_bible.previous_chapter();
+                                    debug!("{:?}", current_chapter);
+                                    current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
+                                    current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
+                                    bible.set(Some(curr_bible));
+                                },
+                                None => debug!("Bible match failed")
+                            }
+                        },
+                        "Previous"
+                    }
+                }
+                div {
+                    class: "fixed bottom-0 right-0 m-4",
+                    button {
+                        class: "px-4 py-2 text-black bg-slate-300 rounded",
+                        onclick: move |_| {
+                            match bible() {
+                                Some(mut curr_bible) => {
+                                    curr_bible.next_chapter();
+                                    current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
+                                    current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
+                                    debug!("{:?}", current_chapter);
+                                    bible.set(Some(curr_bible));
+                                },
+                                None => debug!("Bible match failed")
+                            }
+                        },
+                        "Next"
+                    }
+                }
             }
         }
-    })
+    }
 }
