@@ -22,6 +22,7 @@ fn App() -> Element {
     let mut current_chapter_text = use_signal(|| "".to_string());
     let mut unique_books = use_signal(|| vec![]);
     let mut chapter_tuples = use_signal(|| Vec::new());
+    let mut entered_chapter_num = use_signal(|| "1".to_string());
 
     // let mut search_keyword = use_signal(|| "".to_string());
 
@@ -77,18 +78,19 @@ fn App() -> Element {
             display: "flex",
             flex_direction: "row",
             div {
-                class: "flex border-r bg-gray-100/40 w-[250px] lg:block max-h-screen overflow-y-auto",
+                class: "flex bg-gray-100/10 w-[250px] lg:block max-h-screen overflow-y-auto",
                 nav {
                     div {
-                        class: "flex-1 grid items-start px-4 py-2 text-sm font-medium",
+                        class: "flex-1 grid items-start py-2 text-sm font-medium",
                         if let Some(curr_bible) = bible() {
                             for book in unique_books() {
                                 button {
                                     class: "py-2",
+                                    disabled: curr_bible.get_current_chapter().map_or(false, |chapter| chapter.book == book),
                                     onclick: move |_| {
                                         match bible() {
                                             Some(mut curr_bible) => {
-                                                debug!("{}", &book);
+                                                // debug!("{}", &book);
                                                 let chapter_ref = curr_bible.chapters
                                                     .iter()
                                                     .find(|chapter| &chapter.book == &book)
@@ -99,16 +101,53 @@ fn App() -> Element {
                                                     curr_bible.go_to_chapter(&chapter_ref);
                                                     current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
                                                     current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
+                                                    entered_chapter_num.set("1".to_string());
                                                     bible.set(Some(curr_bible));
                                                 }
                                             }
-                                            None => {debug!("{}", book);}
+                                            None => {debug!("Failed to load Bible book: {}", book);}
                                         }
                                     },
                                     if curr_bible.get_current_chapter().map_or(false, |chapter| chapter.book == book) {
-                                        strong {
-                                            class: "flex text-lg px-4 py-2 rounded-md text-white bg-gray-700",
-                                            "{book.to_uppercase()}"
+                                        {}
+                                        div {
+                                            class: "flex justify-between align-middle text-base pl-2 py-2 text-white bg-gray-700",
+                                            strong {
+                                                class: "flex items-center",
+                                                "{book.to_uppercase()}"
+                                            }
+                                            input {
+                                                class: "ml-auto pl-2 pr-2 py-1 w-20 text-right bg-gray-700 appearance-none focus:outline-none hover:bg-gray-600",
+                                                r#type: "number",
+                                                maxlength: "3",
+                                                value: "{entered_chapter_num}",
+                                                key: "{book}",
+                                                autofocus: true,
+                                                oninput: move |evt| {
+                                                    if let Some(mut curr_bible) = bible() {
+                                                        let chapter_num = evt.value().parse().unwrap_or(1);
+                                                        let num_chapters_in_book = curr_bible.num_chapters_in_current_book();
+
+                                                        let chapter_num = match chapter_num {
+                                                            num if num < 1 => {entered_chapter_num.set(1.to_string()); 1},
+                                                            num if num > num_chapters_in_book => {entered_chapter_num.set(1.to_string()); num_chapters_in_book},
+                                                            num => {entered_chapter_num.set(1.to_string()); num},
+                                                        };
+
+                                                        entered_chapter_num.set(chapter_num.to_string());
+
+                                                        let current_chapter_ref = curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.r#ref.clone());
+                                                        let brev = current_chapter_ref.split('.').next().unwrap_or("");
+
+                                                        let new_chapter_ref = format!("{}.{}", brev, chapter_num);
+
+                                                        curr_bible.go_to_chapter(&new_chapter_ref);
+                                                        current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
+                                                        current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
+                                                        bible.set(Some(curr_bible));
+                                                    }
+                                                }
+                                            }
                                         }
                                     } else {
                                         "{book}"
@@ -134,6 +173,7 @@ fn App() -> Element {
                                         curr_bible.previous_chapter();
                                         current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
                                         current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
+                                        entered_chapter_num.set(curr_bible.get_current_chapter().unwrap().chapter.to_string());
                                         bible.set(Some(curr_bible));
                                     },
                                     None => debug!("Bible match failed")
@@ -153,7 +193,7 @@ fn App() -> Element {
                             }
                         }
                         h1 {
-                            class: "text-4xl font-extrabold tracking-tight lg:text-5xl mx-4 w-50% truncate order-2",
+                            class: "text-4xl font-extrabold tracking-tight lg:text-5xl mx-4 w-50% order-2 py-2",
                             "{current_chapter}"
                         }
                         button {
@@ -164,6 +204,7 @@ fn App() -> Element {
                                         curr_bible.next_chapter();
                                         current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
                                         current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
+                                        entered_chapter_num.set(curr_bible.get_current_chapter().unwrap().chapter.to_string());
                                         bible.set(Some(curr_bible));
                                     },
                                     None => debug!("Bible match failed")
@@ -184,48 +225,25 @@ fn App() -> Element {
                         }
                     }
                 }
-                // div {
-                //     class: "flex space-x-4 overflow-x-auto pb-4 scrollbar-hide",
-                //     if let Some(curr_bible) = bible() {
-                //         select {
-                //             class: "block w-2 rounded-md shadow-none bg-slate-50",
-                //             onchange: move |evt: Event<FormData>| {
-                //                 let selected_ref = evt.value();
-                //                 if let Some(mut new_bible) = bible() {
-                //                     if let Some(chapter) = new_bible.chapters.iter().find(|ch| ch.r#ref == selected_ref) {
-                //                         current_chapter_text.set(chapter.text.clone());
-                //                         current_chapter.set(chapter.get_pretty_chapter());
-                //                         new_bible.go_to_chapter(&selected_ref);
-                //                         bible.set(Some(new_bible));
-                //                     }
-                //                 }
-                //             },
-                //             {curr_bible.chapters.iter()
-                //                 .filter(|chapter| chapter.book == curr_bible.get_current_chapter().map_or("".to_string(), |curr_chapter| curr_chapter.book.clone()))
-                //                 .map(|chapter| rsx! {
-                //                     option {
-                //                         value: "{chapter.r#ref}",
-                //                         selected: chapter.get_pretty_chapter() == current_chapter(),
-                //                         "Ch. {chapter.chapter}"
-                //                     }
-                //                 })}
-                //         }
-                //     }
-                // }
 
                 hr {}
                 div {
-                    class: "mx-4 my-4 prose-gray max-w-prose",
-
+                    class: "ml-6 my-4 prose-gray max-w-prose",
                     if let Some(curr_bible) = bible() {
                         if let Some(chapter) = curr_bible.get_current_chapter() {
                             {
                                 chapter.verses.iter().map(|verse| {
                                     rsx! {
-                                        p {
-                                            class: " leading-loose",
-                                            dangerous_inner_html: format_args!("<b>{}</b> {} <br />", verse.verse_num, verse.text),
-                                            " "
+                                        div {
+                                            class: "flex items-start line",
+                                            div {
+                                                class: "w-8 flex-shrink-0 text-right py-1  mr-2 font-bold",
+                                                "{verse.verse_num}"
+                                            }
+                                            div {
+                                                class: "flex-grow pl-4 py-1 leading-loose",
+                                                "{verse.text}"
+                                            }
                                         }
                                     }
                                 })

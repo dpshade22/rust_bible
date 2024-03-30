@@ -180,6 +180,17 @@ impl Bible {
             self.chapters.rotate_left(index);
         }
     }
+
+    pub fn num_chapters_in_current_book(&self) -> usize {
+        if let Some(current_chapter) = self.get_current_chapter() {
+            self.chapters
+                .iter()
+                .filter(|chapter| chapter.book == current_chapter.book)
+                .count()
+        } else {
+            0
+        }
+    }
 }
 
 pub async fn fetch_verses_from_url(url: &str) -> Result<Bible> {

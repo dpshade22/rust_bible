@@ -23,6 +23,9 @@ module.exports = {
         '90%': '90%',
         '4': '1rem',
       },
+      padding: {
+        '4': '1rem',
+      },
     },
   },
   plugins: [],
