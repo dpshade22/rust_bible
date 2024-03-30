@@ -8,13 +8,13 @@ use verse::*;
 
 fn main() {
     // Urls are relative to your Cargo.toml file
-    const _TAILWIND_URL: &str = manganis::mg!(file("public/tailwind.css"));
+    const _TAILWIND_URL: &str = manganis::mg!(file("./public/tailwind.css"));
 
-    #[cfg(target_arch = "wasm32")]
-    {
-        wasm_logger::init(wasm_logger::Config::default());
-        dioxus_web::launch::launch(App, vec![], Default::default());
-    }
+    // #[cfg(target_arch = "wasm32")]
+    // {
+    wasm_logger::init(wasm_logger::Config::default());
+    dioxus_web::launch::launch(App, vec![], Default::default());
+    // }
 
     // #[cfg(not(target_arch = "wasm32"))]
     // dioxus_desktop::launch::launch(App, vec![], Default::default());
@@ -81,6 +81,7 @@ fn App() -> Element {
 
     rsx! {
         div {
+            style: include_str!("../public/tailwind.css") ,
             class: "flex w-full bg-gray-100/40",
             display: "flex",
             flex_direction: "row",
@@ -131,15 +132,15 @@ fn App() -> Element {
                                                 value: "{entered_chapter_num}",
                                                 key: "{book}",
                                                 autofocus: true,
-                                                oninput: move |evt| {
+                                                onchange: move |evt| {
                                                     if let Some(mut curr_bible) = bible() {
-                                                        let chapter_num = evt.value().parse().unwrap_or(1);
+                                                        let chapter_num = evt.value().parse().unwrap_or(0);
                                                         let num_chapters_in_book = curr_bible.num_chapters_in_current_book();
                                                         // TODO: Handle "no current chapter" case more explicitly
 
                                                         let chapter_num = match chapter_num {
                                                             // TODO: Validate chapter_num input more strictly
-                                                            num if num < 1 => {entered_chapter_num.set(1.to_string()); 1},
+                                                            num if num < 1 => {entered_chapter_num.set(1.to_string());  1},
                                                             num if num > num_chapters_in_book => {entered_chapter_num.set(1.to_string()); num_chapters_in_book},
                                                             num => {entered_chapter_num.set(1.to_string()); num},
                                                         };

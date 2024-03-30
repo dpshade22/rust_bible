@@ -9,18 +9,10 @@
 
 <body>
     <div id="main"></div>
-    <!-- <script>
-        TODO: Rewrite this for a proper render of app via index.html
-        WebAssembly.instantiateStreaming(fetch('target/wasm32-unknown-unknown/debug/rustBible.wasm'))
-            .then(obj => {
-                // obj.instance contains the compiled module instance
-                const exports = obj.instance.exports;
-
-                // Call an exported function
-                const result = exports.myFunction(42);
-                console.log(result);
-            });
-    </script> -->
+    <script>
+        // TODO: Rewrite this for a proper render of app via index.html
+        WebAssembly.instantiateStreaming(fetch('target/wasm32-unknown-unknown/debug/rustBible.wasm'));
+    </script>
 
 </body>
 
