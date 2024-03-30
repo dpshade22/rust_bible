@@ -11,9 +11,14 @@ fn main() {
     // Urls are relative to your Cargo.toml file
     const _TAILWIND_URL: &str = manganis::mg!(file("public/tailwind.css"));
 
-    // wasm_logger::init(wasm_logger::Config::default());
-    // dioxus_web::launch::launch(App, vec![], Default::default());
-    dioxus_desktop::launch::launch(App, vec![], Default::default());
+    #[cfg(target_arch = "wasm32")]
+    {
+        wasm_logger::init(wasm_logger::Config::default());
+        dioxus_web::launch::launch(App, vec![], Default::default());
+    }
+
+    // #[cfg(not(target_arch = "wasm32"))]
+    // dioxus_desktop::launch::launch(App, vec![], Default::default());
 }
 
 #[component]
