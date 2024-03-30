@@ -11,8 +11,9 @@ fn main() {
     // Urls are relative to your Cargo.toml file
     const _TAILWIND_URL: &str = manganis::mg!(file("public/tailwind.css"));
 
-    wasm_logger::init(wasm_logger::Config::default());
-    dioxus_web::launch::launch(App, vec![], Default::default());
+    // wasm_logger::init(wasm_logger::Config::default());
+    // dioxus_web::launch::launch(App, vec![], Default::default());
+    dioxus_desktop::launch::launch(App, vec![], Default::default());
 }
 
 #[component]
@@ -42,6 +43,8 @@ fn App() -> Element {
     // };
 
     use_future(move || async move {
+        // TODO: Handle error case better if fetch fails
+
         if let Ok(fetched_bible) =
             fetch_verses_from_url("https://arweave.net/daKtqqHpLRnAWCNEWY8Q92NwSyJxWbm7WFDE3ut_BuM")
                 .await
@@ -98,6 +101,7 @@ fn App() -> Element {
                                                     .map(|s| s.to_string());
 
                                                 if let Some(chapter_ref) = chapter_ref {
+                                                    // TODO: Validate chapter_ref exists before calling go_to_chapter
                                                     curr_bible.go_to_chapter(&chapter_ref);
                                                     current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
                                                     current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
@@ -127,8 +131,10 @@ fn App() -> Element {
                                                     if let Some(mut curr_bible) = bible() {
                                                         let chapter_num = evt.value().parse().unwrap_or(1);
                                                         let num_chapters_in_book = curr_bible.num_chapters_in_current_book();
+                                                        // TODO: Handle "no current chapter" case more explicitly
 
                                                         let chapter_num = match chapter_num {
+                                                            // TODO: Validate chapter_num input more strictly
                                                             num if num < 1 => {entered_chapter_num.set(1.to_string()); 1},
                                                             num if num > num_chapters_in_book => {entered_chapter_num.set(1.to_string()); num_chapters_in_book},
                                                             num => {entered_chapter_num.set(1.to_string()); num},

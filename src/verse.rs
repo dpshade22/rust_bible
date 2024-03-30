@@ -182,6 +182,7 @@ impl Bible {
     }
 
     pub fn num_chapters_in_current_book(&self) -> usize {
+        // TODO: Handle "no current chapter" case more explicitly
         if let Some(current_chapter) = self.get_current_chapter() {
             self.chapters
                 .iter()
