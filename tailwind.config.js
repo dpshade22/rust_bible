@@ -7,6 +7,9 @@ module.exports = {
     // include all html files in the output (dist) directory
     "./dist/**/*.html",
   ],
+  safelist: [
+    { pattern: /.*/ }
+  ],
   theme: {
     extend: {
       spacing: {
