@@ -45,7 +45,7 @@ pub fn Sidebar(
                                 },
                                 if curr_bible.get_current_chapter().map_or(false, |chapter| chapter.book == book) {
                                     div {
-                                        class: "rounded-r-lg flex justify-between align-middle text-base pl-2 text-white bg-gray-700",
+                                        class: "rounded-r-lg flex justify-between align-middle text-base pl-3 text-white bg-gray-700",
                                         strong {
                                             class: "flex items-center",
                                             "{book.to_uppercase()}"
