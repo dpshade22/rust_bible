@@ -7,11 +7,12 @@ module.exports = {
     // include all html files in the output (dist) directory
     "./dist/**/*.html",
   ],
-  safelist: [
-    { pattern: /.*/ }
-  ],
+  safelist: ['bg-gray-*', 'bg-slate-*'],
   theme: {
     extend: {
+      animation: {
+        'spin-slow': 'spin 3s linear infinite',
+      },
       spacing: {
         '10%': '10%',
         '20%': '20%',

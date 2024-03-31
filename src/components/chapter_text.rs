@@ -14,7 +14,7 @@ pub fn ChapterText(bible: Signal<Option<Bible>>) -> Element {
                                 div {
                                     class: "flex items-start line",
                                     div {
-                                        class: "w-8 flex-shrink-0 text-right py-1  mr-2 font-bold",
+                                        class: "w-8 flex-shrink-0 text-right py-2  mr-2 font-bold",
                                         "{verse.verse_num}"
                                     }
                                     div {

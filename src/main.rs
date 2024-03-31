@@ -5,7 +5,7 @@ mod components;
 mod utils;
 
 use bible::*;
-use components::{ChapterNav, ChapterText, Sidebar};
+use components::{ChapterNav, ChapterText, LoadingScreen, Sidebar};
 use dioxus::prelude::*;
 use utils::*;
 
@@ -13,11 +13,11 @@ fn main() {
     // Urls are relative to your Cargo.toml file
     const _TAILWIND_URL: &str = manganis::mg!(file("./public/tailwind.css"));
 
-    // #[cfg(target_arch = "wasm32")]
-    // {
-    wasm_logger::init(wasm_logger::Config::default());
-    dioxus_web::launch::launch(App, vec![], Default::default());
-    // }
+    #[cfg(target_arch = "wasm32")]
+    {
+        wasm_logger::init(wasm_logger::Config::default());
+        dioxus_web::launch::launch(App, vec![], Default::default());
+    }
 
     // #[cfg(not(target_arch = "wasm32"))]
     // dioxus_desktop::launch::launch(App, vec![], Default::default());
@@ -65,22 +65,26 @@ fn App() -> Element {
     });
 
     rsx! {
-        div {
-            style: include_str!("../public/tailwind.css") ,
-            class: "flex w-full bg-gray-100/40",
-            display: "flex",
-            flex_direction: "row",
-            Sidebar {bible, unique_books, current_chapter, current_chapter_text, entered_chapter_num},
+            if bible().is_none() {
+                LoadingScreen {}
+            } else {
             div {
-                class: "flex-1 max-h-screen overflow-y-auto",
+                style: include_str!("../public/tailwind.css") ,
+                class: "flex w-full bg-gray-100/40",
+                display: "flex",
+                flex_direction: "row",
+                Sidebar {bible, unique_books, current_chapter, current_chapter_text, entered_chapter_num},
                 div {
-                    class: "flex px-4 pt-2",
-                    ChapterNav { bible, current_chapter, current_chapter_text, entered_chapter_num}
+                    class: "flex-1 max-h-screen overflow-y-auto",
+                    div {
+                        class: "flex px-4 pt-2",
+                        ChapterNav { bible, current_chapter, current_chapter_text, entered_chapter_num}
+                    }
+
+                    hr {}
+
+                    ChapterText { bible }
                 }
-
-                hr {}
-
-                ChapterText { bible }
             }
         }
     }

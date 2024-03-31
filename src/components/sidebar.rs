@@ -12,7 +12,7 @@ pub fn Sidebar(
 ) -> Element {
     rsx! {
         div {
-            class: "flex bg-gray-100/10 w-[250px] lg:block max-h-screen overflow-y-auto",
+            class: "flex bg-gray-100 w-60 lg:block max-h-screen overflow-y-auto",
             nav {
                 div {
                     class: "flex-1 grid items-start py-2 text-sm font-medium",
@@ -44,19 +44,17 @@ pub fn Sidebar(
                                     }
                                 },
                                 if curr_bible.get_current_chapter().map_or(false, |chapter| chapter.book == book) {
-                                    {}
                                     div {
-                                        class: "flex justify-between align-middle text-base pl-2 py-2 text-white bg-gray-700",
+                                        class: "rounded-r-lg flex justify-between align-middle text-base pl-2 text-white bg-gray-700",
                                         strong {
                                             class: "flex items-center",
                                             "{book.to_uppercase()}"
                                         }
                                         input {
-                                            class: "ml-auto pl-2 pr-2 py-1 w-20 text-right bg-gray-700 appearance-none focus:outline-none hover:bg-gray-600",
+                                            class: "rounded-lg w-16 ml-4 px-2 py-2 cursor-pointer text-right bg-gray-500 appearance-none outline-bg-gray-600",
                                             r#type: "number",
                                             maxlength: "3",
                                             value: "{entered_chapter_num}",
-                                            key: "{book}",
                                             autofocus: true,
                                             onchange: move |evt| {
                                                 if let Some(mut curr_bible) = bible() {
