@@ -29,23 +29,6 @@ fn App() -> Element {
     let mut chapter_tuples = use_signal(|| Vec::new());
     let mut entered_chapter_num = use_signal(|| "1".to_string());
 
-    // let mut search_keyword = use_signal(|| "".to_string());
-
-    // let handle_search = move |_| {
-    //     if let Some(mut curr_bible) = bible() {
-    //         let keyword = search_keyword();
-    //         curr_bible.chapters_by_keyword(&keyword);
-
-    //         if let Some(chapters) = curr_bible.keyword_search_chapters {
-    //             if chapters.len() != 0 {
-    //                 let first_chapter = chapters.first().unwrap();
-    //                 current_chapter_text.set(first_chapter.text.clone());
-    //                 current_chapter.set(first_chapter.get_pretty_chapter());
-    //             }
-    //         }
-    //     }
-    // };
-
     use_future(move || async move {
         // TODO: Handle error case better if fetch fails
 
@@ -263,44 +246,6 @@ fn App() -> Element {
                     }
                 }
             }
-            // div {
-            //     class: "fixed bottom-0 left-250 m-4",
-            //     button {
-            //         class: "px-4 py-2 text-white bg-gray-700 rounded",
-            //         onclick: move |_| {
-            //             match bible() {
-            //                 Some(mut curr_bible) => {
-            //                     curr_bible.previous_chapter();
-            //                     debug!("{:?}", current_chapter);
-            //                     current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
-            //                     current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
-            //                     bible.set(Some(curr_bible));
-            //                 },
-            //                 None => debug!("Bible match failed")
-            //             }
-            //         },
-            //         "Previous"
-            //     }
-            // }
-            // div {
-            //     class: "fixed bottom-0 right-0 m-4",
-            //     button {
-            //         class: "px-4 py-2 text-white bg-gray-700 rounded",
-            //         onclick: move |_| {
-            //             match bible() {
-            //                 Some(mut curr_bible) => {
-            //                     curr_bible.next_chapter();
-            //                     current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
-            //                     current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
-            //                     debug!("{:?}", current_chapter);
-            //                     bible.set(Some(curr_bible));
-            //                 },
-            //                 None => debug!("Bible match failed")
-            //             }
-            //         },
-            //         "Next"
-            //     }
-            // }
         }
     }
 }
