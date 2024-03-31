@@ -73,15 +73,15 @@ impl Bible {
     //     }
     // }
 
-    // pub fn search_by_keyword(&self, word: &str) -> Vec<Verse> {
-    //     let search_word = format!(" {} ", word.to_lowercase());
-    //     self.chapters
-    //         .iter()
-    //         .flat_map(|chapter| chapter.verses.iter())
-    //         .filter(|verse| verse.text.to_lowercase().contains(&search_word))
-    //         .cloned()
-    //         .collect()
-    // }
+    pub fn search_by_keyword(&self, word: &str) -> Vec<Verse> {
+        let search_word = format!(" {} ", word.to_lowercase());
+        self.chapters
+            .iter()
+            .flat_map(|chapter| chapter.verses.iter())
+            .filter(|verse| verse.text.to_lowercase().contains(&search_word))
+            .cloned()
+            .collect()
+    }
 
     // pub fn chapters_by_keyword(&mut self, word: &str) {
     //     let search_word = format!(" {} ", word.to_lowercase());

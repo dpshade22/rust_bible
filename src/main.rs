@@ -4,6 +4,7 @@ mod verse;
 
 use dioxus::prelude::*;
 use log::debug;
+use regex::Regex;
 use verse::*;
 
 fn main() {
@@ -29,7 +30,8 @@ fn App() -> Element {
     let mut chapter_tuples = use_signal(|| Vec::new());
     let mut entered_chapter_num = use_signal(|| "1".to_string());
 
-    // let mut search_keyword = use_signal(|| "".to_string());
+    let mut search_keyword = use_signal(|| "".to_string());
+    let mut search_results: Signal<Vec<Verse>> = use_signal(|| vec![]);
 
     // let handle_search = move |_| {
     //     if let Some(mut curr_bible) = bible() {
@@ -91,77 +93,118 @@ fn App() -> Element {
                     div {
                         class: "flex-1 grid items-start py-2 text-sm font-medium",
                         if let Some(curr_bible) = bible() {
-                            for book in unique_books() {
-                                button {
-                                    class: "py-2",
-                                    disabled: curr_bible.get_current_chapter().map_or(false, |chapter| chapter.book == book),
-                                    onclick: move |_| {
-                                        match bible() {
-                                            Some(mut curr_bible) => {
-                                                // debug!("{}", &book);
-                                                let chapter_ref = curr_bible.chapters
-                                                    .iter()
-                                                    .find(|chapter| &chapter.book == &book)
-                                                    .map(|chapter| chapter.r#ref.as_str())
-                                                    .map(|s| s.to_string());
+                            input {
+                                class: "ml-auto pl-2 pr-2 mt-4 h-fit w-full text-left appearance-none focus:outline-none hover:bg-gray-200",
+                                r#type: "text",
+                                placeholder: "Search the Bible...",
+                                value: "{search_keyword}",
+                                onchange: move |evt| {
+                                    search_keyword.set(evt.value());
+                                    search_results.set(curr_bible.search_by_keyword(&evt.value()));
+                                }
+                            }
+                            if search_keyword() == "" {
+                                for book in unique_books() {
+                                    button {
+                                        class: "py-2",
+                                        disabled: curr_bible.get_current_chapter().map_or(false, |chapter| chapter.book == book),
+                                        onclick: move |_| {
+                                            match bible() {
+                                                Some(mut curr_bible) => {
+                                                    // debug!("{}", &book);
+                                                    let chapter_ref = curr_bible.chapters
+                                                        .iter()
+                                                        .find(|chapter| &chapter.book == &book)
+                                                        .map(|chapter| chapter.r#ref.as_str())
+                                                        .map(|s| s.to_string());
 
-                                                if let Some(chapter_ref) = chapter_ref {
-                                                    // TODO: Validate chapter_ref exists before calling go_to_chapter
-                                                    curr_bible.go_to_chapter(&chapter_ref);
-                                                    current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
-                                                    current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
-                                                    entered_chapter_num.set("1".to_string());
-                                                    bible.set(Some(curr_bible));
-                                                }
-                                            }
-                                            None => {debug!("Failed to load Bible book: {}", book);}
-                                        }
-                                    },
-                                    if curr_bible.get_current_chapter().map_or(false, |chapter| chapter.book == book) {
-                                        {}
-                                        div {
-                                            class: "flex justify-between align-middle text-base pl-2 py-2 text-white bg-gray-700",
-                                            strong {
-                                                class: "flex items-center",
-                                                "{book.to_uppercase()}"
-                                            }
-                                            input {
-                                                class: "ml-auto pl-2 pr-2 py-1 w-20 text-right bg-gray-700 appearance-none focus:outline-none hover:bg-gray-600",
-                                                r#type: "number",
-                                                maxlength: "3",
-                                                value: "{entered_chapter_num}",
-                                                key: "{book}",
-                                                autofocus: true,
-                                                onchange: move |evt| {
-                                                    if let Some(mut curr_bible) = bible() {
-                                                        let chapter_num = evt.value().parse().unwrap_or(0);
-                                                        let num_chapters_in_book = curr_bible.num_chapters_in_current_book();
-                                                        // TODO: Handle "no current chapter" case more explicitly
-
-                                                        let chapter_num = match chapter_num {
-                                                            // TODO: Validate chapter_num input more strictly
-                                                            num if num < 1 => {entered_chapter_num.set(1.to_string());  1},
-                                                            num if num > num_chapters_in_book => {entered_chapter_num.set(1.to_string()); num_chapters_in_book},
-                                                            num => {entered_chapter_num.set(1.to_string()); num},
-                                                        };
-
-                                                        entered_chapter_num.set(chapter_num.to_string());
-
-                                                        let current_chapter_ref = curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.r#ref.clone());
-                                                        let brev = current_chapter_ref.split('.').next().unwrap_or("");
-
-                                                        let new_chapter_ref = format!("{}.{}", brev, chapter_num);
-
-                                                        curr_bible.go_to_chapter(&new_chapter_ref);
+                                                    if let Some(chapter_ref) = chapter_ref {
+                                                        // TODO: Validate chapter_ref exists before calling go_to_chapter
+                                                        curr_bible.go_to_chapter(&chapter_ref);
                                                         current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
                                                         current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
+                                                        entered_chapter_num.set("1".to_string());
                                                         bible.set(Some(curr_bible));
                                                     }
                                                 }
+                                                None => {debug!("Failed to load Bible book: {}", book);}
                                             }
+                                        },
+                                        if curr_bible.get_current_chapter().map_or(false, |chapter| chapter.book == book) {
+                                            div {
+                                                class: "flex justify-between align-middle text-base pl-2 py-2 text-white bg-gray-700",
+                                                strong {
+                                                    class: "flex items-center",
+                                                    "{book.to_uppercase()}"
+                                                }
+                                                input {
+                                                    class: "ml-auto pl-2 pr-2 py-1 w-20 text-right bg-gray-700 appearance-none focus:outline-none hover:bg-gray-600",
+                                                    r#type: "number",
+                                                    maxlength: "3",
+                                                    value: "{entered_chapter_num}",
+                                                    key: "{book}",
+                                                    autofocus: true,
+                                                    onchange: move |evt| {
+                                                        if let Some(mut curr_bible) = bible() {
+                                                            let chapter_num = evt.value().parse().unwrap_or(0);
+                                                            let num_chapters_in_book = curr_bible.num_chapters_in_current_book();
+                                                            // TODO: Handle "no current chapter" case more explicitly
+
+                                                            let chapter_num = match chapter_num {
+                                                                // TODO: Validate chapter_num input more strictly
+                                                                num if num < 1 => {entered_chapter_num.set(1.to_string());  1},
+                                                                num if num > num_chapters_in_book => {entered_chapter_num.set(1.to_string()); num_chapters_in_book},
+                                                                num => {entered_chapter_num.set(1.to_string()); num},
+                                                            };
+
+                                                            entered_chapter_num.set(chapter_num.to_string());
+
+                                                            let current_chapter_ref = curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.r#ref.clone());
+                                                            let brev = current_chapter_ref.split('.').next().unwrap_or("");
+
+                                                            let new_chapter_ref = format!("{}.{}", brev, chapter_num);
+
+                                                            curr_bible.go_to_chapter(&new_chapter_ref);
+                                                            current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
+                                                            current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
+                                                            bible.set(Some(curr_bible));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            "{book}"
                                         }
-                                    } else {
-                                        "{book}"
+                                    }
+                                }
+                            }
+                             else {
+                                for verse in search_results() {
+                                    button {
+                                        class: "py-2 text-start",
+                                        onclick: move |_| {
+                                            match bible() {
+                                                Some(mut curr_bible) => {
+                                                    debug!("{:?}", &verse);
+
+                                                    let re = Regex::new(r"^([A-Za-z]+\.\d+)").unwrap();
+
+                                                    if let Some(caps) = re.captures(&verse.r#ref) {
+                                                        let result = caps.get(1).unwrap().as_str();
+
+                                                        curr_bible.go_to_chapter(&result);
+                                                        current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
+                                                        current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
+                                                        entered_chapter_num.set("1".to_string());
+                                                        bible.set(Some(curr_bible));
+                                                    } else {
+                                                        println!("No match found");
+                                                    }
+                                                }
+                                                None => {debug!("Failed to load Bible book: {:?}", &verse);}
+                                            }
+                                        },
+                                        "{verse.r#ref}"
                                     }
                                 }
                             }
@@ -248,12 +291,23 @@ fn App() -> Element {
                                         div {
                                             class: "flex items-start line",
                                             div {
-                                                class: "w-8 flex-shrink-0 text-right py-1  mr-2 font-bold",
-                                                "{verse.verse_num}"
+                                                class: "w-8 flex-shrink-0 text-right py-2 mr-2",
+                                                strong {
+                                                    class: "text-slate-400",
+                                                    "{verse.verse_num}"
+                                                }
                                             }
                                             div {
                                                 class: "flex-grow pl-4 py-1 leading-loose",
-                                                "{verse.text}"
+                                                if search_keyword() != "" && verse.text.contains(&search_keyword().to_lowercase()) {
+                                                    {debug!("FOUND!");}
+                                                    mark {
+                                                        class: "!bg-rose-400",
+                                                        "{verse.text}"
+                                                    }
+                                                } else {
+                                                    "{verse.text}"
+                                                }
                                             }
                                         }
                                     }
@@ -263,44 +317,6 @@ fn App() -> Element {
                     }
                 }
             }
-            // div {
-            //     class: "fixed bottom-0 left-250 m-4",
-            //     button {
-            //         class: "px-4 py-2 text-white bg-gray-700 rounded",
-            //         onclick: move |_| {
-            //             match bible() {
-            //                 Some(mut curr_bible) => {
-            //                     curr_bible.previous_chapter();
-            //                     debug!("{:?}", current_chapter);
-            //                     current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
-            //                     current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
-            //                     bible.set(Some(curr_bible));
-            //                 },
-            //                 None => debug!("Bible match failed")
-            //             }
-            //         },
-            //         "Previous"
-            //     }
-            // }
-            // div {
-            //     class: "fixed bottom-0 right-0 m-4",
-            //     button {
-            //         class: "px-4 py-2 text-white bg-gray-700 rounded",
-            //         onclick: move |_| {
-            //             match bible() {
-            //                 Some(mut curr_bible) => {
-            //                     curr_bible.next_chapter();
-            //                     current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
-            //                     current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
-            //                     debug!("{:?}", current_chapter);
-            //                     bible.set(Some(curr_bible));
-            //                 },
-            //                 None => debug!("Bible match failed")
-            //             }
-            //         },
-            //         "Next"
-            //     }
-            // }
         }
     }
 }
