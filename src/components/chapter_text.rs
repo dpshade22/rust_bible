@@ -3,6 +3,10 @@ use dioxus::prelude::*;
 
 #[component]
 pub fn ChapterText(bible: Signal<Option<Bible>>) -> Element {
+    fn verse_cleaning(verse: String) -> String {
+        verse.replace("--", "-")
+    }
+    
     rsx! {
         div {
             class: "ml-6 my-4 prose-gray max-w-prose",
@@ -19,7 +23,7 @@ pub fn ChapterText(bible: Signal<Option<Bible>>) -> Element {
                                     }
                                     div {
                                         class: "flex-grow pl-4 py-1 leading-loose",
-                                        "{verse.text}"
+                                        "{verse_cleaning(verse.text.to_string())}"
                                     }
                                 }
                             }
