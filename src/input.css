@@ -16,3 +16,14 @@ input[type="number"]:focus {
     outline: none;
     border: none;
 }
+
+.smart-highlight {
+    position: relative;
+}
+
+.smart-highlight::before {
+    content: "";
+    position: absolute;
+    background: rgb(244 63 94);
+    z-index: -1;
+}

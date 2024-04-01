@@ -558,6 +558,10 @@ video {
   position: fixed;
 }
 
+.absolute {
+  position: absolute;
+}
+
 .relative {
   position: relative;
 }
@@ -771,11 +775,6 @@ video {
   background-color: rgb(243 244 246 / 0.4);
 }
 
-.bg-gray-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(229 231 235 / var(--tw-bg-opacity));
-}
-
 .bg-gray-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(107 114 128 / var(--tw-bg-opacity));
@@ -884,6 +883,11 @@ video {
   color: rgb(107 114 128 / var(--tw-text-opacity));
 }
 
+.text-rose-600 {
+  --tw-text-opacity: 1;
+  color: rgb(225 29 72 / var(--tw-text-opacity));
+}
+
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
@@ -922,9 +926,15 @@ input[type="number"]:focus {
   border: none;
 }
 
-.hover\:bg-gray-300:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(209 213 219 / var(--tw-bg-opacity));
+.smart-highlight {
+  position: relative;
+}
+
+.smart-highlight::before {
+  content: "";
+  position: absolute;
+  background: rgb(244 63 94);
+  z-index: -1;
 }
 
 .hover\:text-gray-700:hover {

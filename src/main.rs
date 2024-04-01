@@ -1,14 +1,14 @@
 #![allow(non_snake_case)]
 
-mod models;
-mod helpers;
 mod components;
+mod helpers;
+mod models;
 
-use crate::models::*;
 use crate::components::*;
 use crate::helpers::*;
-use log::debug;
+use crate::models::*;
 use dioxus::prelude::*;
+use log::debug;
 
 fn main() {
     // Urls are relative to your Cargo.toml file
@@ -31,8 +31,9 @@ fn App() -> Element {
     let mut current_chapter_text = use_signal(|| "".to_string());
     let mut unique_books = use_signal(|| vec![]);
     let mut chapter_tuples = use_signal(|| Vec::new());
-    let mut show_jump = use_signal(|| true);
     let entered_chapter_num = use_signal(|| "1".to_string());
+    let smart_verses: Signal<Vec<Verse>> = use_signal(|| vec![]);
+    let show_jump = use_signal(|| true);
 
     use_future(move || async move {
         // TODO: Handle error case better if fetch fails
@@ -83,12 +84,10 @@ fn App() -> Element {
                         class: "flex px-4 pt-2",
                         ChapterNav { bible, current_chapter, current_chapter_text, entered_chapter_num, show_jump }
                     }
-
                     hr {}
-
-                    ChapterText { bible }
+                    ChapterText { bible, smart_verses }
                 }
-                SmartJump { bible, show_jump, current_chapter, current_chapter_text, entered_chapter_num }
+                SmartJump { bible, show_jump, current_chapter, current_chapter_text, entered_chapter_num, smart_verses }
             }
         }
     }

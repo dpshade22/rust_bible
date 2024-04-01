@@ -74,7 +74,7 @@ pub fn ChapterNav(
             },
         }
         button {
-            class: "sticky top-4 float-right p-2 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none",
+            class: "sticky top-4 float-right p-2 rounded-full focus:outline-none",
             onclick: move |_| show_jump.set(!show_jump()),
             svg {
                 xmlns: "http://www.w3.org/2000/svg",
