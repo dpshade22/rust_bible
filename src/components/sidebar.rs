@@ -1,4 +1,4 @@
-use crate::bible::Bible;
+use crate::models::Bible;
 use dioxus::prelude::*;
 use log::debug;
 
@@ -55,7 +55,6 @@ pub fn Sidebar(
                                             r#type: "number",
                                             maxlength: "3",
                                             value: "{entered_chapter_num}",
-                                            autofocus: true,
                                             onchange: move |evt| {
                                                 if let Some(mut curr_bible) = bible() {
                                                     let chapter_num = evt.value().parse().unwrap_or(0);

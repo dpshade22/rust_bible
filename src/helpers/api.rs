@@ -1,4 +1,4 @@
-use crate::{Bible, Verse};
+use crate::models::{Bible, Verse};
 use anyhow::{Context, Result};
 use serde_json;
 

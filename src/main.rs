@@ -1,13 +1,14 @@
 #![allow(non_snake_case)]
 
-mod bible;
+mod models;
+mod helpers;
 mod components;
-mod utils;
 
-use bible::*;
-use components::{ChapterNav, ChapterText, LoadingScreen, Sidebar};
+use crate::models::*;
+use crate::components::*;
+use crate::helpers::*;
+use log::debug;
 use dioxus::prelude::*;
-use utils::*;
 
 fn main() {
     // Urls are relative to your Cargo.toml file
@@ -30,6 +31,7 @@ fn App() -> Element {
     let mut current_chapter_text = use_signal(|| "".to_string());
     let mut unique_books = use_signal(|| vec![]);
     let mut chapter_tuples = use_signal(|| Vec::new());
+    let mut show_jump = use_signal(|| true);
     let entered_chapter_num = use_signal(|| "1".to_string());
 
     use_future(move || async move {
@@ -73,18 +75,20 @@ fn App() -> Element {
                 class: "flex w-full bg-gray-100/40",
                 display: "flex",
                 flex_direction: "row",
+                // Focusable input to receive keyboard events
                 Sidebar {bible, unique_books, current_chapter, current_chapter_text, entered_chapter_num},
                 div {
                     class: "flex-1 max-h-screen overflow-y-auto",
                     div {
                         class: "flex px-4 pt-2",
-                        ChapterNav { bible, current_chapter, current_chapter_text, entered_chapter_num}
+                        ChapterNav { bible, current_chapter, current_chapter_text, entered_chapter_num, show_jump }
                     }
 
                     hr {}
 
                     ChapterText { bible }
                 }
+                SmartJump { bible, show_jump, current_chapter, current_chapter_text, entered_chapter_num }
             }
         }
     }

@@ -1,4 +1,4 @@
-use crate::bible::Bible;
+use crate::models::Bible;
 use dioxus::prelude::*;
 
 #[component]
