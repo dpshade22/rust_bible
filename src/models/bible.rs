@@ -23,6 +23,9 @@ impl Verse {
             String::new()
         }
     }
+    pub fn get_pretty_verse(&self) -> String {
+        format!("{} {}:{}", self.book, self.chapter, self.verse_num)
+    }
 }
 
 #[derive(Debug, Clone)]

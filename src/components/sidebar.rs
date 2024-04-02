@@ -1,3 +1,4 @@
+use crate::helpers::*;
 use crate::models::Bible;
 use dioxus::prelude::*;
 use log::debug;
@@ -23,21 +24,15 @@ pub fn Sidebar(
                                 disabled: curr_bible.get_current_chapter().map_or(false, |chapter| chapter.book == book),
                                 onclick: move |_| {
                                     match bible() {
-                                        Some(mut curr_bible) => {
-
-                                            let chapter_ref = curr_bible.chapters
+                                        Some(temp_bible) => {
+                                            let chapter_ref = temp_bible.chapters
                                                 .iter()
                                                 .find(|chapter| &chapter.book == &book)
                                                 .map(|chapter| chapter.r#ref.as_str())
                                                 .map(|s| s.to_string());
 
                                             if let Some(chapter_ref) = chapter_ref {
-                                                // TODO: Validate chapter_ref exists before calling go_to_chapter
-                                                curr_bible.go_to_chapter(&chapter_ref);
-                                                current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
-                                                current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
-                                                entered_chapter_num.set("1".to_string());
-                                                bible.set(Some(curr_bible));
+                                                update_bible_state(bible, temp_bible, current_chapter_text, current_chapter, entered_chapter_num, &chapter_ref);
                                             }
                                         }
                                         None => {debug!("Failed to load Bible book: {}", book);}
@@ -56,9 +51,9 @@ pub fn Sidebar(
                                             maxlength: "3",
                                             value: "{entered_chapter_num}",
                                             onchange: move |evt| {
-                                                if let Some(mut curr_bible) = bible() {
+                                                if let Some(mut temp_bible) = bible() {
                                                     let chapter_num = evt.value().parse().unwrap_or(0);
-                                                    let num_chapters_in_book = curr_bible.num_chapters_in_current_book();
+                                                    let num_chapters_in_book = temp_bible.num_chapters_in_current_book();
                                                     // TODO: Handle "no current chapter" case more explicitly
 
                                                     let chapter_num = match chapter_num {
@@ -68,17 +63,12 @@ pub fn Sidebar(
                                                         num => {entered_chapter_num.set(1.to_string()); num},
                                                     };
 
-                                                    entered_chapter_num.set(chapter_num.to_string());
-
-                                                    let current_chapter_ref = curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.r#ref.clone());
+                                                    let current_chapter_ref = temp_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.r#ref.clone());
                                                     let brev = current_chapter_ref.split('.').next().unwrap_or("");
 
                                                     let new_chapter_ref = format!("{}.{}", brev, chapter_num);
 
-                                                    curr_bible.go_to_chapter(&new_chapter_ref);
-                                                    current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
-                                                    current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
-                                                    bible.set(Some(curr_bible));
+                                                    update_bible_state(bible, temp_bible, current_chapter_text, current_chapter, entered_chapter_num, &new_chapter_ref)
                                                 }
                                             }
                                         }

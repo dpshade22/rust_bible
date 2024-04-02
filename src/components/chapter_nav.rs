@@ -1,3 +1,4 @@
+use crate::helpers::*;
 use crate::models::*;
 use dioxus::prelude::*;
 use log::debug;
@@ -17,13 +18,10 @@ pub fn ChapterNav(
                 class: "text-gray-500 hover:text-gray-700 order-1",
                 onclick: move |_| {
                     match bible() {
-                        Some(mut curr_bible) => {
-                            curr_bible.previous_chapter();
-                            current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
-                            current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
-                            entered_chapter_num.set(curr_bible.get_current_chapter().unwrap().chapter.to_string());
-
-                            bible.set(Some(curr_bible));
+                        Some(mut temp_bible) => {
+                            temp_bible.previous_chapter();
+                            let chapter_ref = temp_bible.get_current_chapter().unwrap().r#ref.clone();
+                            update_bible_state(bible, temp_bible, current_chapter_text, current_chapter, entered_chapter_num, &chapter_ref)
                         },
                         None => debug!("Bible match failed")
                     }
@@ -49,12 +47,10 @@ pub fn ChapterNav(
                 class: "text-gray-500 hover:text-gray-700 order-3",
                 onclick: move |_| {
                     match bible() {
-                        Some(mut curr_bible) => {
-                            curr_bible.next_chapter();
-                            current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
-                            current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
-                            entered_chapter_num.set(curr_bible.get_current_chapter().unwrap().chapter.to_string());
-                            bible.set(Some(curr_bible));
+                        Some(mut temp_bible) => {
+                            temp_bible.next_chapter();
+                            let chapter_ref = temp_bible.get_current_chapter().unwrap().r#ref.clone();
+                            update_bible_state(bible, temp_bible, current_chapter_text, current_chapter, entered_chapter_num, &chapter_ref)
                         },
                         None => debug!("Bible match failed")
                     }

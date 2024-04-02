@@ -23,9 +23,9 @@ pub fn SmartJump(
                     onclick: move |_| show_jump.set(false),
                 }
                 div {
-                    class: "rounded-lg shadow-lg my-4 z-10 w-1/2",
+                    class: "rounded-lg shadow-lg bg-gray-900 p-6 my-4 z-10 w-1/2",
                     input {
-                        class: "rounded-lg px-4 py-2 w-full focus:border-slate-500 focus:ring-slate-500 focus:ring-1 outline-bg-gray-50 appearance-none",
+                        class: "rounded-lg px-4 py-2 w-full focus:ring-0 outline-bg-gray-50 appearance-none",
                         "type": "text",
                         placeholder: "Enter search text...",
                         tabindex: 0,
@@ -38,7 +38,7 @@ pub fn SmartJump(
                                     match parse_bible_reference(&search_text()) {
                                         Some(found_match) => {
                                             if let Some(chapter_ref) = format_bible_reference(Some(found_match)) {
-                                                let mut temp_bible = curr_bible.clone();
+                                                let temp_bible = curr_bible.clone();
 
                                                 let found_smart_verses = find_smart_verses(&temp_bible, &chapter_ref);
                                                 if !found_smart_verses.is_empty() {
@@ -47,13 +47,8 @@ pub fn SmartJump(
 
                                                 let chapter_ref = parse_chapter_ref(&chapter_ref);
 
-                                                temp_bible.go_to_chapter(&chapter_ref);
-                                                current_chapter_text.set(temp_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
-                                                current_chapter.set(temp_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
-                                                entered_chapter_num.set(temp_bible.get_current_chapter().unwrap().chapter.to_string());
-
+                                                update_bible_state(bible, temp_bible, current_chapter_text, current_chapter, entered_chapter_num, &chapter_ref);
                                                 show_jump.set(false);
-                                                bible.set(Some(temp_bible));
 
                                                 exact = true;
                                             } else {
@@ -62,25 +57,21 @@ pub fn SmartJump(
                                         }
                                         None => {
                                             debug!("No match found");
-                                            show_jump.set(false);
+                                            // show_jump.set(false);
                                         },
                                     }
                                     if !exact {
                                         debug!("Trying keyword search");
-                                        let mut temp_bible = curr_bible.clone();
+                                        let temp_bible = curr_bible.clone();
                                         smart_verses.set(keyword_search(&temp_bible.clone(), &search_text()));
 
                                         debug!("{:?}", smart_verses());
 
                                         if !smart_verses.is_empty() {
-                                            temp_bible.go_to_chapter(&smart_verses.first().unwrap().get_chapter());
-                                            current_chapter_text.set(temp_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
-                                            current_chapter.set(temp_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
-                                            entered_chapter_num.set(temp_bible.get_current_chapter().unwrap().chapter.to_string());
+                                            let chapter_ref = &smart_verses.first().unwrap().get_chapter();
+                                            update_bible_state(bible, temp_bible, current_chapter_text, current_chapter, entered_chapter_num, &chapter_ref);
 
-                                            bible.set(Some(temp_bible));
-
-                                            show_jump.set(false);
+                                            // show_jump.set(false);
                                         }
                                     } else {
                                         debug!("No keywords found.");
@@ -89,6 +80,30 @@ pub fn SmartJump(
                                 None => error!("No Bible match found during search")
                             }
                         },
+                    }
+                    div {
+                        class: "mt-2 overflow-y-auto max-h-64",
+                        {
+                            smart_verses().iter().map(|verse| rsx! {
+                                div {
+                                    class: "px-4 py-2 max-h-fit bg-gray-100 rounded-md mb-2 ",
+                                    button {
+                                        class: "flex-1",
+                                        onclick: move |_| {
+
+                                        },
+                                        p {
+                                            class: "font-medium",
+                                            "{verse.get_pretty_verse()}",
+                                        }
+                                        p {
+                                            class: "italic",
+                                            "{verse.text}"
+                                        }
+                                    }
+                                }
+                            })
+                        }
                     }
                 }
             }

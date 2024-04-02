@@ -30,7 +30,6 @@ fn App() -> Element {
     let mut current_chapter = use_signal(|| "".to_string());
     let mut current_chapter_text = use_signal(|| "".to_string());
     let mut unique_books = use_signal(|| vec![]);
-    let mut chapter_tuples = use_signal(|| Vec::new());
     let entered_chapter_num = use_signal(|| "1".to_string());
     let smart_verses: Signal<Vec<Verse>> = use_signal(|| vec![]);
     let show_jump = use_signal(|| true);
@@ -58,13 +57,6 @@ fn App() -> Element {
             );
 
             unique_books.set(fetched_bible.get_unique_books());
-
-            let chapter_tuples_vec: Vec<(String, Chapter)> = fetched_bible
-                .chapters
-                .iter()
-                .map(|chapter| (chapter.r#ref.clone(), chapter.clone()))
-                .collect();
-            chapter_tuples.set(chapter_tuples_vec);
         }
     });
 
