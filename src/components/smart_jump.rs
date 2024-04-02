@@ -13,6 +13,7 @@ pub fn SmartJump(
     smart_verses: Signal<Vec<Verse>>,
 ) -> Element {
     let mut search_text = use_signal(|| "".to_string());
+    let mut show_dropdown = use_signal(|| false);
 
     // Declared here due to being an extracted UI helper function
     fn handle_input(
@@ -158,6 +159,26 @@ pub fn SmartJump(
                                 }
                             }
                             hr {}
+                        }
+                    }
+                    div {
+                        class: "relative",
+                        button {
+                            class: "px-4 py-1 my-2 bg-gray-500 rounded-b-lg text-white",
+                            onclick: move |_| show_dropdown.set(!show_dropdown()),
+                            strong {
+                                "{bible().unwrap().translation}"
+                            }
+                        }
+                        if show_dropdown() {
+                            div {
+                                class: "border absolute bg-gray-400 shadow-md py-2 rounded-md mt-2",
+                                button {
+                                    class: "rounded-md px-4 py-2 hover:bg-gray-100",
+                                    "CSB"
+                                }
+                                // Add more options as needed
+                            }
                         }
                     }
                 }
