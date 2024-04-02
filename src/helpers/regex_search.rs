@@ -1,3 +1,5 @@
+use log::debug;
+
 const BIBLE_BOOKS: &[&str] = &[
     "1 Peter",
     "2 Peter",
@@ -146,10 +148,10 @@ const ALTERNATIVE_BOOK_NAMES: &[(&str, &str)] = &[
     ("Deut", "Deuteronomy"),
     ("Josh", "Joshua"),
     ("Judg", "Judges"),
-    ("Ruth", "Ruth"),
     ("Ezr", "Ezra"),
     ("Neh", "Nehemiah"),
     ("Est", "Esther"),
+    ("Proverb", "Proverbs"),
     ("Prov", "Proverbs"),
     ("Eccl", "Ecclesiastes"),
     ("Song", "SongofSolomon"),
@@ -182,6 +184,7 @@ const ALTERNATIVE_BOOK_NAMES: &[(&str, &str)] = &[
     ("Phlm", "Philemon"),
     ("Heb", "Hebrews"),
     ("Jas", "James"),
+    ("Revelations", "Revelation"),
     ("Rev", "Revelation"),
 ];
 
@@ -254,7 +257,24 @@ const OSIS_BOOK_NAMES: &[(&str, &str)] = &[
     ("Revelation", "Rev"),
 ];
 
-pub fn parse_bible_reference(query: &str) -> Option<(String, u32, Option<u32>, Option<u32>)> {
+pub fn get_osis_by_book(book: &str) -> Option<String> {
+    for (book_name, osis_name) in OSIS_BOOK_NAMES {
+        if book_name == &book {
+            return Some(osis_name.to_string());
+        }
+    }
+    None
+}
+
+pub fn parse_bible_reference(
+    query: &str,
+) -> Option<(
+    Option<String>,
+    Option<u32>,
+    Option<u32>,
+    Option<u32>,
+    String,
+)> {
     // Convert the query to lowercase for case-insensitive matching
     let query_lower = query.to_lowercase();
 
@@ -270,7 +290,27 @@ pub fn parse_bible_reference(query: &str) -> Option<(String, u32, Option<u32>, O
                     .find(|(readable, _)| readable == book)
                     .map(|(_, osis)| *osis)
                 {
-                    return Some((osis_name.to_string(), chapter, verse_start, verse_end));
+                    return Some((
+                        Some(osis_name.to_string()),
+                        Some(chapter),
+                        verse_start,
+                        verse_end,
+                        remaining_query.to_string(),
+                    ));
+                }
+            } else {
+                if let Some(osis_name) = OSIS_BOOK_NAMES
+                    .iter()
+                    .find(|(readable, _)| readable == book)
+                    .map(|(_, osis)| *osis)
+                {
+                    return Some((
+                        Some(osis_name.to_string()),
+                        None,
+                        None,
+                        None,
+                        remaining_query.to_string(),
+                    ));
                 }
             }
         }
@@ -288,7 +328,27 @@ pub fn parse_bible_reference(query: &str) -> Option<(String, u32, Option<u32>, O
                     .find(|(readable, _)| readable == book)
                     .map(|(_, osis)| *osis)
                 {
-                    return Some((osis_name.to_string(), chapter, verse_start, verse_end));
+                    return Some((
+                        Some(osis_name.to_string()),
+                        Some(chapter),
+                        verse_start,
+                        verse_end,
+                        remaining_query.to_string(),
+                    ));
+                }
+            } else {
+                if let Some(osis_name) = OSIS_BOOK_NAMES
+                    .iter()
+                    .find(|(readable, _)| readable == book)
+                    .map(|(_, osis)| *osis)
+                {
+                    return Some((
+                        Some(osis_name.to_string()),
+                        None,
+                        None,
+                        None,
+                        remaining_query.to_string(),
+                    ));
                 }
             }
         }
@@ -301,12 +361,25 @@ pub fn parse_bible_reference(query: &str) -> Option<(String, u32, Option<u32>, O
             if let Some((chapter, verse_start, verse_end)) =
                 parse_chapter_and_verses(remaining_query)
             {
-                return Some((osis_name.to_string(), chapter, verse_start, verse_end));
+                return Some((
+                    Some(osis_name.to_string()),
+                    Some(chapter),
+                    verse_start,
+                    verse_end,
+                    remaining_query.to_string(),
+                ));
+            } else {
+                return Some((
+                    Some(osis_name.to_string()),
+                    None,
+                    None,
+                    None,
+                    remaining_query.to_string(),
+                ));
             }
         }
     }
-
-    None
+    return Some((None, None, None, None, query.to_string()));
 }
 
 pub fn format_bible_reference(
@@ -322,11 +395,10 @@ pub fn format_bible_reference(
                 formatted.push_str(&format!("-{}", end));
             }
         }
-
+        debug!("Formatted reference: {}", formatted);
         formatted
     })
 }
-
 
 fn parse_chapter_and_verses(query: &str) -> Option<(u32, Option<u32>, Option<u32>)> {
     let numbers: Vec<u32> = query

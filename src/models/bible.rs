@@ -49,7 +49,6 @@ impl Chapter {
 pub struct Bible {
     pub translation: String,
     pub chapters: Vec<Chapter>,
-    pub keyword_search_chapters: Option<Vec<Chapter>>,
 }
 
 impl Bible {

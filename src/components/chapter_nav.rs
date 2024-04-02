@@ -1,7 +1,7 @@
 use crate::helpers::*;
 use crate::models::*;
 use dioxus::prelude::*;
-use log::debug;
+use log::{debug, error};
 
 #[component]
 pub fn ChapterNav(
@@ -39,9 +39,25 @@ pub fn ChapterNav(
                     }
                 }
             }
-            h1 {
-                class: "text-4xl font-extrabold tracking-tight lg:text-5xl mx-4 w-50% order-2 py-2",
-                "{current_chapter}"
+            button {
+                class: "flex text-justify text-4xl font-extrabold tracking-tight lg:text-5xl mx-4 w-50% order-2 pl-4 py-2",
+                onclick: move |_| {
+                    match bible() {
+                        Some(temp_bible) => {
+                            let chapter_ref: String;
+                            if let Some(current_osis) = get_osis_by_book(&temp_bible.get_current_chapter().unwrap().book) {
+                                chapter_ref = format!("{}.{}", current_osis, "1");
+                            } else {
+                                chapter_ref = "Gen.1".to_string();
+                            }
+                            update_bible_state(bible, temp_bible, current_chapter, current_chapter_text, entered_chapter_num, &chapter_ref)
+                        }
+                        None => error!("Couldn't get Bible from chapter nav")
+                    }
+                },
+                h1 {
+                    "{current_chapter}"
+                }
             }
             button {
                 class: "text-gray-500 hover:text-gray-700 order-3",

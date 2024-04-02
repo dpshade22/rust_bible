@@ -18,7 +18,6 @@ pub async fn fetch_verses_from_url(url: &str) -> Result<Bible> {
         Ok(Bible {
             translation: "ESV".to_string(),
             chapters,
-            keyword_search_chapters: None,
         })
     } else {
         Err(anyhow::anyhow!(
