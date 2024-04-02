@@ -25,11 +25,12 @@ pub fn SmartJump(
                 div {
                     class: "rounded-lg shadow-lg bg-gray-900 p-6 my-4 z-10 w-1/2",
                     input {
-                        class: "rounded-lg px-4 py-2 w-full focus:ring-0 outline-bg-gray-50 appearance-none",
+                        class: "rounded-lg px-4 py-2 w-full focus:outline-none border-none appearance-none",
                         "type": "text",
                         placeholder: "Enter search text...",
                         tabindex: 0,
                         autofocus: true,
+                        value: search_text,
                         oninput: move |evt| search_text.set(evt.value()),
                         onchange: move |_| {
                             let mut exact: bool = false;
@@ -47,7 +48,7 @@ pub fn SmartJump(
 
                                                 let chapter_ref = parse_chapter_ref(&chapter_ref);
 
-                                                update_bible_state(bible, temp_bible, current_chapter_text, current_chapter, entered_chapter_num, &chapter_ref);
+                                                update_bible_state(bible, temp_bible, current_chapter, current_chapter_text, entered_chapter_num, &chapter_ref);
                                                 show_jump.set(false);
 
                                                 exact = true;
@@ -69,7 +70,7 @@ pub fn SmartJump(
 
                                         if !smart_verses.is_empty() {
                                             let chapter_ref = &smart_verses.first().unwrap().get_chapter();
-                                            update_bible_state(bible, temp_bible, current_chapter_text, current_chapter, entered_chapter_num, &chapter_ref);
+                                            update_bible_state(bible, temp_bible, current_chapter, current_chapter_text, entered_chapter_num, &chapter_ref);
 
                                             // show_jump.set(false);
                                         }
@@ -83,26 +84,26 @@ pub fn SmartJump(
                     }
                     div {
                         class: "mt-2 overflow-y-auto max-h-64",
-                        {
-                            smart_verses().iter().map(|verse| rsx! {
-                                div {
-                                    class: "px-4 py-2 max-h-fit bg-gray-100 rounded-md mb-2 ",
-                                    button {
-                                        class: "flex-1",
-                                        onclick: move |_| {
-
-                                        },
-                                        p {
-                                            class: "font-medium",
-                                            "{verse.get_pretty_verse()}",
+                        for verse in smart_verses() {
+                            div {
+                                class: "flex flex-col justify-center w-full bg-white px-4 py-2 max-h-fit rounded-md mb-2 hover:bg-gray-50",
+                                button {
+                                    onclick: move |_| {
+                                        if let Some(temp_bible) = bible() {
+                                        update_bible_state(bible, temp_bible, current_chapter, current_chapter_text, entered_chapter_num, &verse.get_chapter())
                                         }
-                                        p {
-                                            class: "italic",
-                                            "{verse.text}"
-                                        }
+                                        show_jump.set(false);
+                                    },
+                                    p {
+                                        class: "font-medium inline",
+                                        "{verse.get_pretty_verse()}",
+                                    }
+                                    p {
+                                        class: "italic inline",
+                                        "{verse.text}"
                                     }
                                 }
-                            })
+                            }
                         }
                     }
                 }

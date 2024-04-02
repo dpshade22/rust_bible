@@ -21,7 +21,7 @@ pub fn ChapterNav(
                         Some(mut temp_bible) => {
                             temp_bible.previous_chapter();
                             let chapter_ref = temp_bible.get_current_chapter().unwrap().r#ref.clone();
-                            update_bible_state(bible, temp_bible, current_chapter_text, current_chapter, entered_chapter_num, &chapter_ref)
+                            update_bible_state(bible, temp_bible, current_chapter, current_chapter_text, entered_chapter_num, &chapter_ref)
                         },
                         None => debug!("Bible match failed")
                     }
@@ -50,7 +50,7 @@ pub fn ChapterNav(
                         Some(mut temp_bible) => {
                             temp_bible.next_chapter();
                             let chapter_ref = temp_bible.get_current_chapter().unwrap().r#ref.clone();
-                            update_bible_state(bible, temp_bible, current_chapter_text, current_chapter, entered_chapter_num, &chapter_ref)
+                            update_bible_state(bible, temp_bible, current_chapter, current_chapter_text, entered_chapter_num, &chapter_ref)
                         },
                         None => debug!("Bible match failed")
                     }

@@ -1,13 +1,12 @@
 use crate::models::*;
 
 use dioxus::prelude::*;
-use log::error;
 
 pub fn update_bible_state(
     mut bible: Signal<Option<Bible>>,
     mut temp_bible: Bible,
-    mut current_chapter_text: Signal<String>,
     mut current_chapter: Signal<String>,
+    mut current_chapter_text: Signal<String>,
     mut entered_chapter_num: Signal<String>,
     chapter_ref: &str,
 ) {

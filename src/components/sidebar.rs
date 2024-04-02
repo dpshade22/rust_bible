@@ -32,7 +32,7 @@ pub fn Sidebar(
                                                 .map(|s| s.to_string());
 
                                             if let Some(chapter_ref) = chapter_ref {
-                                                update_bible_state(bible, temp_bible, current_chapter_text, current_chapter, entered_chapter_num, &chapter_ref);
+                                                update_bible_state(bible, temp_bible, current_chapter, current_chapter_text, entered_chapter_num, &chapter_ref);
                                             }
                                         }
                                         None => {debug!("Failed to load Bible book: {}", book);}
@@ -49,9 +49,9 @@ pub fn Sidebar(
                                             class: "rounded-lg w-16 ml-4 px-2 py-2 cursor-pointer text-right bg-gray-500 appearance-none outline-bg-gray-600",
                                             r#type: "number",
                                             maxlength: "3",
-                                            value: "{entered_chapter_num}",
+                                            value: entered_chapter_num,
                                             onchange: move |evt| {
-                                                if let Some(mut temp_bible) = bible() {
+                                                if let Some(temp_bible) = bible() {
                                                     let chapter_num = evt.value().parse().unwrap_or(0);
                                                     let num_chapters_in_book = temp_bible.num_chapters_in_current_book();
                                                     // TODO: Handle "no current chapter" case more explicitly
@@ -68,7 +68,7 @@ pub fn Sidebar(
 
                                                     let new_chapter_ref = format!("{}.{}", brev, chapter_num);
 
-                                                    update_bible_state(bible, temp_bible, current_chapter_text, current_chapter, entered_chapter_num, &new_chapter_ref)
+                                                    update_bible_state(bible, temp_bible, current_chapter, current_chapter_text, entered_chapter_num, &new_chapter_ref)
                                                 }
                                             }
                                         }

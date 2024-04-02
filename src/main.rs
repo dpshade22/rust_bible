@@ -26,13 +26,13 @@ fn main() {
 
 #[component]
 fn App() -> Element {
-    let mut bible: Signal<Option<Bible>> = use_signal(|| None);
-    let mut current_chapter = use_signal(|| "".to_string());
-    let mut current_chapter_text = use_signal(|| "".to_string());
-    let mut unique_books = use_signal(|| vec![]);
+    let bible: Signal<Option<Bible>> = use_signal(|| None);
+    let current_chapter = use_signal(|| "".to_string());
+    let current_chapter_text = use_signal(|| "".to_string());
     let entered_chapter_num = use_signal(|| "1".to_string());
     let smart_verses: Signal<Vec<Verse>> = use_signal(|| vec![]);
     let show_jump = use_signal(|| true);
+    let mut unique_books = use_signal(|| vec![]);
 
     use_future(move || async move {
         // TODO: Handle error case better if fetch fails
@@ -40,23 +40,15 @@ fn App() -> Element {
             fetch_verses_from_url("https://arweave.net/daKtqqHpLRnAWCNEWY8Q92NwSyJxWbm7WFDE3ut_BuM")
                 .await
         {
-            bible.set(Some(fetched_bible.clone()));
-            current_chapter.set(
-                fetched_bible
-                    .get_current_chapter()
-                    .map_or("Chapter title not found...".to_string(), |chapter| {
-                        chapter.get_pretty_chapter()
-                    }),
-            );
-            current_chapter_text.set(
-                fetched_bible
-                    .get_current_chapter()
-                    .map_or("Chapter text not found...".to_string(), |chapter| {
-                        chapter.text.clone()
-                    }),
-            );
-
             unique_books.set(fetched_bible.get_unique_books());
+            update_bible_state(
+                bible,
+                fetched_bible,
+                current_chapter,
+                current_chapter_text,
+                entered_chapter_num,
+                "Gen.1",
+            );
         }
     });
 
