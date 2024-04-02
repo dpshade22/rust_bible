@@ -13,7 +13,6 @@ pub fn ChapterNav(
     rsx! {
         div {
             class: "flex py-6 items-center w-full",
-
             button {
                 class: "text-gray-500 hover:text-gray-700 order-1",
                 onclick: move |_| {
@@ -23,6 +22,7 @@ pub fn ChapterNav(
                             current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
                             current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
                             entered_chapter_num.set(curr_bible.get_current_chapter().unwrap().chapter.to_string());
+
                             bible.set(Some(curr_bible));
                         },
                         None => debug!("Bible match failed")
@@ -71,7 +71,7 @@ pub fn ChapterNav(
                         d: "M9 5l7 7-7 7",
                     }
                 }
-            },
+            }
         }
         button {
             class: "sticky top-4 float-right p-2 rounded-full focus:outline-none",
@@ -79,7 +79,7 @@ pub fn ChapterNav(
             svg {
                 xmlns: "http://www.w3.org/2000/svg",
                 width: "24",
-                height: "24", 
+                height: "24",
                 view_box: "0 0 24 24",
                 fill: "none",
                 stroke: "currentColor",

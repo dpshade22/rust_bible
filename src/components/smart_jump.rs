@@ -25,39 +25,65 @@ pub fn SmartJump(
                 div {
                     class: "rounded-lg shadow-lg my-4 z-10 w-1/2",
                     input {
-                        class: "rounded-lg px-4 py-2 w-full focus:border-sky-500 focus:ring-sky-500 focus:ring-1 outline-bg-gray-50 appearance-none",
+                        class: "rounded-lg px-4 py-2 w-full focus:border-slate-500 focus:ring-slate-500 focus:ring-1 outline-bg-gray-50 appearance-none",
                         "type": "text",
                         placeholder: "Enter search text...",
+                        tabindex: 0,
                         autofocus: true,
-                        // is_attribute: "autofocus",
                         oninput: move |evt| search_text.set(evt.value()),
                         onchange: move |_| {
+                            let mut exact: bool = false;
                             match bible() {
-                                Some(mut curr_bible) => {
+                                Some(curr_bible) => {
                                     match parse_bible_reference(&search_text()) {
                                         Some(found_match) => {
                                             if let Some(chapter_ref) = format_bible_reference(Some(found_match)) {
-                                                smart_verses.set(find_smart_verses(&curr_bible, &chapter_ref));
-                                                debug!("OG SMART V: {:?}", smart_verses());
+                                                let mut temp_bible = curr_bible.clone();
+
+                                                let found_smart_verses = find_smart_verses(&temp_bible, &chapter_ref);
+                                                if !found_smart_verses.is_empty() {
+                                                    smart_verses.set(found_smart_verses);
+                                                }
 
                                                 let chapter_ref = parse_chapter_ref(&chapter_ref);
 
-                                                curr_bible.go_to_chapter(&chapter_ref);
-                                                current_chapter_text.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
-                                                current_chapter.set(curr_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
-                                                entered_chapter_num.set(curr_bible.get_current_chapter().unwrap().chapter.to_string());
+                                                temp_bible.go_to_chapter(&chapter_ref);
+                                                current_chapter_text.set(temp_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
+                                                current_chapter.set(temp_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
+                                                entered_chapter_num.set(temp_bible.get_current_chapter().unwrap().chapter.to_string());
 
                                                 show_jump.set(false);
-                                                bible.set(Some(curr_bible));
+                                                bible.set(Some(temp_bible));
 
+                                                exact = true;
                                             } else {
                                                 error!("Failed to format the reference");
                                             }
                                         }
                                         None => {
-                                            error!("No match found");
+                                            debug!("No match found");
                                             show_jump.set(false);
                                         },
+                                    }
+                                    if !exact {
+                                        debug!("Trying keyword search");
+                                        let mut temp_bible = curr_bible.clone();
+                                        smart_verses.set(keyword_search(&temp_bible.clone(), &search_text()));
+
+                                        debug!("{:?}", smart_verses());
+
+                                        if !smart_verses.is_empty() {
+                                            temp_bible.go_to_chapter(&smart_verses.first().unwrap().get_chapter());
+                                            current_chapter_text.set(temp_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.text.clone()));
+                                            current_chapter.set(temp_bible.get_current_chapter().map_or("".to_string(), |chapter| chapter.get_pretty_chapter()));
+                                            entered_chapter_num.set(temp_bible.get_current_chapter().unwrap().chapter.to_string());
+
+                                            bible.set(Some(temp_bible));
+
+                                            show_jump.set(false);
+                                        }
+                                    } else {
+                                        debug!("No keywords found.");
                                     }
                                 },
                                 None => error!("No Bible match found during search")
@@ -79,6 +105,7 @@ fn parse_chapter_ref(chapter_ref: &str) -> String {
         chapter_ref.to_string()
     }
 }
+
 fn find_smart_verses(bible: &Bible, chapter_ref: &str) -> Vec<Verse> {
     let parts: Vec<&str> = chapter_ref.split('.').collect();
     if parts.len() > 2 {

@@ -10,13 +10,12 @@ pub fn ChapterText(bible: Signal<Option<Bible>>, smart_verses: Signal<Vec<Verse>
 
     rsx! {
         div {
-            class: "ml-6 my-4 prose-gray max-w-prose",
+            class: "ml-6 my-4 prose-gray max-w-prose no-scrollbar",
             if let Some(curr_bible) = bible() {
                 if let Some(chapter) = curr_bible.get_current_chapter() {
                     {
                         chapter.verses.iter().map(|verse| {
                             let is_smart_verse = smart_verses().iter().any(|v| {
-                                debug!("Chapter verses: {:?}\nSmart verses: {:?}\n", &verse.r#ref, &v.r#ref);
                                 &v.r#ref == &verse.r#ref
                             });
                             let class = if is_smart_verse {

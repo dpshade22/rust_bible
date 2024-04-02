@@ -50,51 +50,6 @@ pub struct Bible {
 }
 
 impl Bible {
-    // pub fn new(translation: String, verses: Vec<Verse>) -> Self {
-    //     let chapters = Bible::to_chapters(verses);
-
-    //     Bible {
-    //         translation,
-    //         chapters,
-    //         keyword_search_chapters: None,
-    //     }
-    // }
-
-    // pub fn get_chapter_by_ref(&self, chapter_ref: &str) -> Option<&Chapter> {
-    //     match self
-    //         .chapters
-    //         .iter()
-    //         .find(|&chapter| chapter.r#ref == chapter_ref)
-    //     {
-    //         Some(chapter) => Some(chapter),
-    //         None => None,
-    //     }
-    // }
-
-    // pub fn search_by_keyword(&self, word: &str) -> Vec<Verse> {
-    //     let search_word = format!(" {} ", word.to_lowercase());
-    //     self.chapters
-    //         .iter()
-    //         .flat_map(|chapter| chapter.verses.iter())
-    //         .filter(|verse| verse.text.to_lowercase().contains(&search_word))
-    //         .cloned()
-    //         .collect()
-    // }
-
-    // pub fn chapters_by_keyword(&mut self, word: &str) {
-    //     let search_word = format!(" {} ", word.to_lowercase());
-
-    //     let verses = self
-    //         .chapters
-    //         .iter()
-    //         .flat_map(|chapter| chapter.verses.iter())
-    //         .filter(|verse| verse.text.to_lowercase().contains(&search_word))
-    //         .cloned()
-    //         .collect();
-
-    //     self.keyword_search_chapters = Some(Bible::to_chapters(verses))
-    // }
-
     pub fn to_chapters(verses: Vec<Verse>) -> Vec<Chapter> {
         let mut chapters = Vec::new();
         let verses_by_chapter = verses.into_iter().group_by(|verse| verse.get_chapter());

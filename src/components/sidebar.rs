@@ -15,7 +15,7 @@ pub fn Sidebar(
             class: "flex bg-gray-100 w-60 lg:block max-h-screen overflow-y-auto",
             nav {
                 div {
-                    class: "flex-1 grid items-start py-2 text-sm font-medium",
+                    class: "flex-1 grid items-start py-2 text-sm font-medium no-scrollbar",
                     if let Some(curr_bible) = bible() {
                         for book in unique_books() {
                             button {

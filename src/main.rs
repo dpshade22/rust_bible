@@ -56,6 +56,7 @@ fn App() -> Element {
                         chapter.text.clone()
                     }),
             );
+
             unique_books.set(fetched_bible.get_unique_books());
 
             let chapter_tuples_vec: Vec<(String, Chapter)> = fetched_bible
