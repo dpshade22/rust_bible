@@ -5,12 +5,9 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-
 [dependencies]
 phf = { version = "0.11.2", features = ["macros"] }
 anyhow = "1.0.81"
-dioxus-web = "0.5.0"
-dioxus = "0.5.0"
 itertools = "0.12.1"
 log = "0.4.21"
 manganis = "0.2.1"
@@ -20,4 +17,11 @@ serde_json = "1.0.114"
 sublime_fuzzy = "0.7.0"
 wasm-logger = "0.2.0"
 web-sys = "0.3.69"
-# dioxus-desktop = "0.5.0"
+dioxus = { version = "0.5" }
+dioxus-web = "0.5.0"
+
+[features]
+default = []
+# desktop = ["dioxus/desktop"]
+# server = ["dioxus/axum"]
+# web = ["dioxus/web"]

@@ -88,7 +88,6 @@ fn SearchResults(
                                     current_chapter,
                                     current_chapter_text,
                                     entered_chapter_num,
-                                    None,
                                     &verse.get_chapter()
                                 );
                             }
@@ -238,7 +237,6 @@ fn handle_translation_change(
                         current_chapter,
                         current_chapter_text,
                         entered_chapter_num,
-                        None,
                         "Gen.1",
                     );
                 }
@@ -275,7 +273,6 @@ fn handle_book_chapter_verse(
             current_chapter,
             current_chapter_text,
             entered_chapter_num,
-            None,
             &chapter_ref,
         );
         show_jump.set(false);
@@ -313,7 +310,6 @@ fn handle_book_keyword(
                 current_chapter,
                 current_chapter_text,
                 entered_chapter_num,
-                None,
                 &chapter_ref,
             );
         }
@@ -341,7 +337,6 @@ fn handle_keyword(
                 current_chapter,
                 current_chapter_text,
                 entered_chapter_num,
-                None,
                 &chapter_ref,
             );
         }
