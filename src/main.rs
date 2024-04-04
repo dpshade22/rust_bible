@@ -42,6 +42,7 @@ fn App() -> Element {
                 .await
         {
             unique_books.set(fetched_bible.get_unique_books());
+
             update_bible_state(
                 bible,
                 fetched_bible,

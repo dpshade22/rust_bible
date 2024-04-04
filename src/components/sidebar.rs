@@ -68,7 +68,7 @@ pub fn Sidebar(
 
                                                     let new_chapter_ref = format!("{}.{}", brev, chapter_num);
 
-                                                    update_bible_state(bible, temp_bible, current_chapter, current_chapter_text, entered_chapter_num, &new_chapter_ref)
+                                                    update_bible_state(bible, temp_bible, current_chapter, current_chapter_text, entered_chapter_num, &new_chapter_ref);
                                                 }
                                             }
                                         }

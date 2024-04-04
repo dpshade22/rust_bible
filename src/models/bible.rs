@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use log::debug;
+use log::{debug, error};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
@@ -52,13 +52,13 @@ pub struct Bible {
 }
 
 impl Bible {
-    pub fn to_chapters(verses: Vec<Verse>) -> Vec<Chapter> {
+    pub fn to_chapters(verses: Vec<Verse>) -> Option<Vec<Chapter>> {
         let mut chapters = Vec::new();
         let verses_by_chapter = verses.into_iter().group_by(|verse| verse.get_chapter());
 
         for (chapter_ref, verses) in &verses_by_chapter {
             let verses: Vec<_> = verses.collect();
-            let first_verse = verses.first().unwrap();
+            let first_verse = verses.first()?;
 
             let chapter = Chapter {
                 r#ref: chapter_ref.to_string(),
@@ -85,7 +85,7 @@ impl Bible {
             chapters.push(chapter);
         }
 
-        chapters
+        Some(chapters)
     }
 
     pub fn get_current_chapter(&self) -> Option<&Chapter> {
@@ -105,7 +105,7 @@ impl Bible {
         }
     }
 
-    pub fn previous_chapter(&mut self) {
+    pub fn previous_chapter(&mut self) -> () {
         if let Some(current_chapter) = self.get_current_chapter() {
             if let Some(index) = self
                 .chapters
@@ -126,7 +126,7 @@ impl Bible {
             .collect()
     }
 
-    pub fn go_to_chapter(&mut self, chapter_ref: &str) {
+    pub fn go_to_chapter(&mut self, chapter_ref: &str) -> () {
         if let Some(index) = self
             .chapters
             .iter()

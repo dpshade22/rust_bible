@@ -3,6 +3,12 @@ use crate::models::*;
 use dioxus::prelude::*;
 use log::{debug, error};
 
+enum ChapterNavigationDirection {
+    Next,
+    Previous,
+    One,
+}
+
 #[component]
 pub fn ChapterNav(
     bible: Signal<Option<Bible>>,
@@ -11,20 +17,78 @@ pub fn ChapterNav(
     entered_chapter_num: Signal<String>,
     show_jump: Signal<bool>,
 ) -> Element {
+    fn handle_chapter_navigation(
+        direction: ChapterNavigationDirection,
+        bible: Signal<Option<Bible>>,
+        current_chapter: Signal<String>,
+        current_chapter_text: Signal<String>,
+        entered_chapter_num: Signal<String>,
+    ) -> Option<()> {
+        match bible() {
+            Some(mut temp_bible) => {
+                match direction {
+                    ChapterNavigationDirection::Next => {
+                        temp_bible.next_chapter();
+                        let chapter_ref = temp_bible.get_current_chapter()?.r#ref.clone();
+                        update_bible_state(
+                            bible,
+                            temp_bible,
+                            current_chapter,
+                            current_chapter_text,
+                            entered_chapter_num,
+                            &chapter_ref,
+                        );
+                    }
+                    ChapterNavigationDirection::Previous => {
+                        temp_bible.previous_chapter();
+                        let chapter_ref = temp_bible.get_current_chapter()?.r#ref.clone();
+                        update_bible_state(
+                            bible,
+                            temp_bible,
+                            current_chapter,
+                            current_chapter_text,
+                            entered_chapter_num,
+                            &chapter_ref,
+                        );
+                    }
+                    ChapterNavigationDirection::One => match bible() {
+                        Some(temp_bible) => {
+                            let chapter_ref: String;
+                            if let Some(current_osis) =
+                                get_osis_by_book(&temp_bible.get_current_chapter()?.book)
+                            {
+                                chapter_ref = format!("{}.{}", current_osis, "1");
+                            } else {
+                                chapter_ref = "Gen.1".to_string();
+                            }
+                            update_bible_state(
+                                bible,
+                                temp_bible,
+                                current_chapter,
+                                current_chapter_text,
+                                entered_chapter_num,
+                                &chapter_ref,
+                            );
+                        }
+                        None => error!("Didn't get ChapterNavigationDirection enum"),
+                    },
+                }
+                Some(())
+            }
+            None => {
+                debug!("Bible match failed");
+                Some(())
+            }
+        }
+    }
+
     rsx! {
         div {
             class: "flex py-6 items-center w-full",
             button {
                 class: "text-gray-500 hover:text-gray-700 order-1",
                 onclick: move |_| {
-                    match bible() {
-                        Some(mut temp_bible) => {
-                            temp_bible.previous_chapter();
-                            let chapter_ref = temp_bible.get_current_chapter().unwrap().r#ref.clone();
-                            update_bible_state(bible, temp_bible, current_chapter, current_chapter_text, entered_chapter_num, &chapter_ref)
-                        },
-                        None => debug!("Bible match failed")
-                    }
+                    handle_chapter_navigation(ChapterNavigationDirection::Previous, bible, current_chapter, current_chapter_text, entered_chapter_num);
                 },
                 svg {
                     class: "h-6 w-6",
@@ -42,18 +106,7 @@ pub fn ChapterNav(
             button {
                 class: "flex text-justify text-4xl font-extrabold tracking-tight lg:text-5xl mx-4 w-50% order-2 pl-4 py-2",
                 onclick: move |_| {
-                    match bible() {
-                        Some(temp_bible) => {
-                            let chapter_ref: String;
-                            if let Some(current_osis) = get_osis_by_book(&temp_bible.get_current_chapter().unwrap().book) {
-                                chapter_ref = format!("{}.{}", current_osis, "1");
-                            } else {
-                                chapter_ref = "Gen.1".to_string();
-                            }
-                            update_bible_state(bible, temp_bible, current_chapter, current_chapter_text, entered_chapter_num, &chapter_ref)
-                        }
-                        None => error!("Couldn't get Bible from chapter nav")
-                    }
+                    handle_chapter_navigation(ChapterNavigationDirection::One, bible, current_chapter, current_chapter_text, entered_chapter_num);
                 },
                 h1 {
                     "{current_chapter}"
@@ -65,14 +118,7 @@ pub fn ChapterNav(
             button {
                 class: "text-gray-500 hover:text-gray-700 order-3",
                 onclick: move |_| {
-                    match bible() {
-                        Some(mut temp_bible) => {
-                            temp_bible.next_chapter();
-                            let chapter_ref = temp_bible.get_current_chapter().unwrap().r#ref.clone();
-                            update_bible_state(bible, temp_bible, current_chapter, current_chapter_text, entered_chapter_num, &chapter_ref)
-                        },
-                        None => debug!("Bible match failed")
-                    }
+                    handle_chapter_navigation(ChapterNavigationDirection::Next, bible, current_chapter, current_chapter_text, entered_chapter_num);
                 },
                 svg {
                     class: "h-6 w-6",

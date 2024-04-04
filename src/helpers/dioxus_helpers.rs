@@ -1,5 +1,5 @@
 use crate::models::*;
-
+use anyhow::Result;
 use dioxus::prelude::*;
 
 pub fn update_bible_state(
@@ -9,7 +9,7 @@ pub fn update_bible_state(
     mut current_chapter_text: Signal<String>,
     mut entered_chapter_num: Signal<String>,
     chapter_ref: &str,
-) {
+) -> Option<()> {
     temp_bible.go_to_chapter(&chapter_ref);
     current_chapter_text.set(
         temp_bible
@@ -21,12 +21,7 @@ pub fn update_bible_state(
             .get_current_chapter()
             .map_or("".to_string(), |chapter| chapter.get_pretty_chapter()),
     );
-    entered_chapter_num.set(
-        temp_bible
-            .get_current_chapter()
-            .unwrap()
-            .chapter
-            .to_string(),
-    );
+    entered_chapter_num.set(temp_bible.get_current_chapter()?.chapter.to_string());
     bible.set(Some(temp_bible.clone()));
+    Some(())
 }

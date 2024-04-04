@@ -152,7 +152,7 @@ pub fn SmartJump(
                                     class: "rounded-lg",
                                     onclick: move |_| {
                                         if let Some(temp_bible) = bible() {
-                                        update_bible_state(bible, temp_bible, current_chapter, current_chapter_text, entered_chapter_num, &verse.get_chapter())
+                                        update_bible_state(bible, temp_bible, current_chapter, current_chapter_text, entered_chapter_num, &verse.get_chapter());
                                         }
                                         show_jump.set(false);
                                     },
