@@ -43,7 +43,7 @@ fn App() -> Element {
             if let Ok(fetched_bible) = fetch_verses_from_url(&bible_url).await {
                 unique_books.set(fetched_bible.get_unique_books());
 
-                update_bible_state(
+                update_bible(
                     bible,
                     fetched_bible,
                     current_chapter,

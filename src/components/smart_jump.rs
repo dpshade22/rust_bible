@@ -38,7 +38,7 @@ pub fn SmartJump(
                             if let Ok(fetched_bible) = fetch_verses_from_url(&bible_url).await {
                                 unique_books.set(fetched_bible.get_unique_books());
 
-                                update_bible_state(
+                                update_bible(
                                     bible,
                                     fetched_bible,
                                     current_chapter,
@@ -66,7 +66,7 @@ pub fn SmartJump(
 
                             let chapter_ref = parse_chapter_ref(&chapter_ref);
 
-                            update_bible_state(
+                            update_bible(
                                 bible,
                                 temp_bible,
                                 current_chapter,
@@ -99,7 +99,7 @@ pub fn SmartJump(
 
                             if !smart_verses.is_empty() {
                                 let chapter_ref = &smart_verses.first().unwrap().get_chapter();
-                                update_bible_state(
+                                update_bible(
                                     bible,
                                     temp_bible,
                                     current_chapter,
@@ -124,7 +124,7 @@ pub fn SmartJump(
 
                             if !smart_verses.is_empty() {
                                 let chapter_ref = &smart_verses.first().unwrap().get_chapter();
-                                update_bible_state(
+                                update_bible(
                                     bible,
                                     temp_bible,
                                     current_chapter,
@@ -176,7 +176,7 @@ pub fn SmartJump(
                                     class: "rounded-lg",
                                     onclick: move |_| {
                                         if let Some(temp_bible) = bible() {
-                                        update_bible_state(bible, temp_bible, current_chapter, current_chapter_text, entered_chapter_num, &verse.get_chapter());
+                                        update_bible(bible, temp_bible, current_chapter, current_chapter_text, entered_chapter_num, &verse.get_chapter());
                                         }
                                         show_jump.set(false);
                                     },

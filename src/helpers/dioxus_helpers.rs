@@ -2,7 +2,7 @@ use crate::models::*;
 use anyhow::Result;
 use dioxus::prelude::*;
 
-pub fn update_bible_state(
+pub fn update_bible(
     mut bible: Signal<Option<Bible>>,
     mut temp_bible: Bible,
     mut current_chapter: Signal<String>,

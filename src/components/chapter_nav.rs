@@ -30,7 +30,7 @@ pub fn ChapterNav(
                     ChapterNavigationDirection::Next => {
                         temp_bible.next_chapter();
                         let chapter_ref = temp_bible.get_current_chapter()?.r#ref.clone();
-                        update_bible_state(
+                        update_bible(
                             bible,
                             temp_bible,
                             current_chapter,
@@ -42,7 +42,7 @@ pub fn ChapterNav(
                     ChapterNavigationDirection::Previous => {
                         temp_bible.previous_chapter();
                         let chapter_ref = temp_bible.get_current_chapter()?.r#ref.clone();
-                        update_bible_state(
+                        update_bible(
                             bible,
                             temp_bible,
                             current_chapter,
@@ -61,7 +61,7 @@ pub fn ChapterNav(
                             } else {
                                 chapter_ref = "Gen.1".to_string();
                             }
-                            update_bible_state(
+                            update_bible(
                                 bible,
                                 temp_bible,
                                 current_chapter,
