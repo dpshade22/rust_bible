@@ -387,7 +387,7 @@ pub fn parse_bible_reference(
 }
 
 pub fn format_bible_reference(
-    reference: Option<(String, u32, Option<u32>, Option<u32>)>,
+    reference: Option<(&str, u32, Option<u32>, Option<u32>)>,
 ) -> Option<String> {
     reference.map(|(book, chapter, verse_start, verse_end)| {
         let mut formatted = format!("{}.{}", book, chapter);
