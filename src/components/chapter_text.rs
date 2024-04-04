@@ -5,7 +5,10 @@ use log::debug;
 #[component]
 pub fn ChapterText(bible: Signal<Option<Bible>>, smart_verses: Signal<Vec<Verse>>) -> Element {
     fn verse_cleaning(verse: String) -> String {
-        verse.replace("--", "-")
+        verse.replace("--", "-");
+        verse.replace("\u{00b6} ", "");
+        verse.replace("[", "");
+        verse.replace("]", "")
     }
 
     rsx! {

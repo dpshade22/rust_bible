@@ -11,7 +11,9 @@ pub fn SmartJump(
     current_chapter_text: Signal<String>,
     entered_chapter_num: Signal<String>,
     smart_verses: Signal<Vec<Verse>>,
+    unique_books: Signal<Vec<String>>,
     search_text: Signal<String>,
+    selected_translation: Signal<String>,
 ) -> Element {
     let mut show_dropdown = use_signal(|| false);
     // let mut input_error = use_signal(|| false);
@@ -24,10 +26,32 @@ pub fn SmartJump(
         current_chapter: Signal<String>,
         current_chapter_text: Signal<String>,
         entered_chapter_num: Signal<String>,
+        mut unique_books: Signal<Vec<String>>,
         search_text: Signal<String>,
+        selected_translation: Signal<String>,
     ) {
         match bible() {
-            Some(curr_bible) => {
+            Some(mut curr_bible) => {
+                if curr_bible.translation != selected_translation() {
+                    spawn(async move {
+                        if let Some(bible_url) = TRANSLATIONS.get(&selected_translation()) {
+                            if let Ok(fetched_bible) = fetch_verses_from_url(&bible_url).await {
+                                unique_books.set(fetched_bible.get_unique_books());
+
+                                update_bible_state(
+                                    bible,
+                                    fetched_bible,
+                                    current_chapter,
+                                    current_chapter_text,
+                                    entered_chapter_num,
+                                    "Gen.1",
+                                );
+                            }
+                        }
+                    });
+                    curr_bible.translation = selected_translation();
+                }
+
                 match parse_bible_reference(&search_text()) {
                     Some((Some(book), Some(chapter), verse_start, verse_end, _)) => {
                         if let Some(chapter_ref) =
@@ -141,7 +165,7 @@ pub fn SmartJump(
                         autofocus: true,
                         value: search_text,
                         oninput: move |evt| search_text.set(evt.value()),
-                        onchange: move |_| handle_input(show_jump, smart_verses, bible, current_chapter, current_chapter_text, entered_chapter_num, search_text),
+                        onchange: move |_| handle_input(show_jump, smart_verses, bible, current_chapter, current_chapter_text, entered_chapter_num, unique_books, search_text, selected_translation),
                     }
                     div {
                         class: "rounded-lg mt-2 overflow-y-auto max-h-64",
@@ -175,19 +199,26 @@ pub fn SmartJump(
                             class: "px-4 py-1 my-2 bg-gray-700 rounded-b-lg text-white",
                             onclick: move |_| show_dropdown.set(!show_dropdown()),
                             strong {
-                                "{bible().unwrap().translation}"
+                                "{selected_translation()}"
                             }
                         }
                         if show_dropdown() {
                             div {
-                                class: "border absolute bg-gray-700 text-white shadow-md py-2 rounded-md mt-2",
-                                button {
-                                    class: "rounded-md px-4 py-2 hover:bg-gray-100",
-                                    strong {
-                                        "CSB"
+                                class: "border absolute bg-gray-700 text-white shadow-md py-2 rounded-md mt-1",
+                                for translation_key in TRANSLATIONS.keys() {
+                                    if translation_key.to_string() != selected_translation() {
+                                        button {
+                                            class: "rounded-md px-4 py-2 hover:bg-gray-500",
+                                            onclick: move |_| {
+                                                selected_translation.set(translation_key.to_string());
+                                                show_dropdown.set(false);
+                                            },
+                                            strong {
+                                                "{translation_key}"
+                                            }
+                                        }
                                     }
                                 }
-                                // Add more options as needed
                             }
                         }
                     }

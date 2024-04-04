@@ -12,7 +12,7 @@ use log::debug;
 
 fn main() {
     // Urls are relative to your Cargo.toml file
-    const _TAILWIND_URL: &str = manganis::mg!(file("./public/tailwind.css"));
+    // const _TAILWIND_URL: &str = manganis::mg!(file("../public/tailwind.css"));
 
     #[cfg(target_arch = "wasm32")]
     {
@@ -33,24 +33,25 @@ fn App() -> Element {
     let smart_verses: Signal<Vec<Verse>> = use_signal(|| vec![]);
     let show_jump = use_signal(|| true);
     let search_text = use_signal(|| "".to_string());
+    let selected_translation = use_signal(|| "ESV".to_string());
     let mut unique_books = use_signal(|| vec![]);
 
     use_future(move || async move {
         // TODO: Handle error case better if fetch fails
-        if let Ok(fetched_bible) =
-            fetch_verses_from_url("https://arweave.net/daKtqqHpLRnAWCNEWY8Q92NwSyJxWbm7WFDE3ut_BuM")
-                .await
-        {
-            unique_books.set(fetched_bible.get_unique_books());
 
-            update_bible_state(
-                bible,
-                fetched_bible,
-                current_chapter,
-                current_chapter_text,
-                entered_chapter_num,
-                "Gen.1",
-            );
+        if let Some(bible_url) = TRANSLATIONS.get(&selected_translation()) {
+            if let Ok(fetched_bible) = fetch_verses_from_url(&bible_url).await {
+                unique_books.set(fetched_bible.get_unique_books());
+
+                update_bible_state(
+                    bible,
+                    fetched_bible,
+                    current_chapter,
+                    current_chapter_text,
+                    entered_chapter_num,
+                    "Gen.1",
+                );
+            }
         }
     });
 
@@ -74,7 +75,7 @@ fn App() -> Element {
                     hr {}
                     ChapterText { bible, smart_verses }
                 }
-                SmartJump { bible, show_jump, current_chapter, current_chapter_text, entered_chapter_num, smart_verses, search_text }
+                SmartJump { bible, show_jump, current_chapter, current_chapter_text, entered_chapter_num, smart_verses, unique_books, search_text, selected_translation }
             }
         }
     }
