@@ -32,6 +32,7 @@ fn App() -> Element {
     let entered_chapter_num = use_signal(|| "1".to_string());
     let smart_verses: Signal<Vec<Verse>> = use_signal(|| vec![]);
     let show_jump = use_signal(|| true);
+    let search_text = use_signal(|| "".to_string());
     let mut unique_books = use_signal(|| vec![]);
 
     use_future(move || async move {
@@ -72,7 +73,7 @@ fn App() -> Element {
                     hr {}
                     ChapterText { bible, smart_verses }
                 }
-                SmartJump { bible, show_jump, current_chapter, current_chapter_text, entered_chapter_num, smart_verses }
+                SmartJump { bible, show_jump, current_chapter, current_chapter_text, entered_chapter_num, smart_verses, search_text }
             }
         }
     }

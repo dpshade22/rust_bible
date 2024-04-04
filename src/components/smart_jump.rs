@@ -11,9 +11,10 @@ pub fn SmartJump(
     current_chapter_text: Signal<String>,
     entered_chapter_num: Signal<String>,
     smart_verses: Signal<Vec<Verse>>,
+    search_text: Signal<String>,
 ) -> Element {
-    let mut search_text = use_signal(|| "".to_string());
     let mut show_dropdown = use_signal(|| false);
+    // let mut input_error = use_signal(|| false);
 
     // Declared here due to being an extracted UI helper function
     fn handle_input(
@@ -56,53 +57,60 @@ pub fn SmartJump(
                     }
                     Some((Some(book), _, _, _, remaining_query)) => {
                         debug!("Trying keyword search");
-                        let temp_bible = curr_bible.clone();
-                        smart_verses.set(keyword_search(
-                            &temp_bible.clone(),
-                            &remaining_query,
-                            Some(&book),
-                        ));
+                        if !remaining_query.trim().is_empty() {
+                            debug!("Remaining query: {}", remaining_query.trim());
 
-                        debug!(
-                            "Found book and NO chapter... {}... Filtering by keyword: {:?}",
-                            book, remaining_query
-                        );
+                            let temp_bible = curr_bible.clone();
 
-                        if !smart_verses.is_empty() {
-                            let chapter_ref = &smart_verses.first().unwrap().get_chapter();
-                            update_bible_state(
-                                bible,
-                                temp_bible,
-                                current_chapter,
-                                current_chapter_text,
-                                entered_chapter_num,
-                                &chapter_ref,
+                            smart_verses.set(keyword_search(
+                                &temp_bible.clone(),
+                                &remaining_query,
+                                Some(&book),
+                            ));
+
+                            debug!(
+                                "Found book and NO chapter... {}... Filtering by keyword: {:?}",
+                                book, remaining_query
                             );
 
-                            // show_jump.set(false);
+                            if !smart_verses.is_empty() {
+                                let chapter_ref = &smart_verses.first().unwrap().get_chapter();
+                                update_bible_state(
+                                    bible,
+                                    temp_bible,
+                                    current_chapter,
+                                    current_chapter_text,
+                                    entered_chapter_num,
+                                    &chapter_ref,
+                                );
+
+                                // show_jump.set(false);
+                            }
                         }
                     }
                     Some((_, _, _, _, remaining_query)) => {
                         debug!("Trying keyword search");
-                        let temp_bible = curr_bible.clone();
-                        smart_verses.set(keyword_search(
-                            &temp_bible.clone(),
-                            &remaining_query,
-                            None,
-                        ));
+                        if !remaining_query.trim().is_empty() {
+                            let temp_bible = curr_bible.clone();
+                            smart_verses.set(keyword_search(
+                                &temp_bible.clone(),
+                                &remaining_query,
+                                None,
+                            ));
 
-                        if !smart_verses.is_empty() {
-                            let chapter_ref = &smart_verses.first().unwrap().get_chapter();
-                            update_bible_state(
-                                bible,
-                                temp_bible,
-                                current_chapter,
-                                current_chapter_text,
-                                entered_chapter_num,
-                                &chapter_ref,
-                            );
+                            if !smart_verses.is_empty() {
+                                let chapter_ref = &smart_verses.first().unwrap().get_chapter();
+                                update_bible_state(
+                                    bible,
+                                    temp_bible,
+                                    current_chapter,
+                                    current_chapter_text,
+                                    entered_chapter_num,
+                                    &chapter_ref,
+                                );
 
-                            // show_jump.set(false);
+                                // show_jump.set(false);
+                            }
                         }
                     }
                     None => {
@@ -164,7 +172,7 @@ pub fn SmartJump(
                     div {
                         class: "relative",
                         button {
-                            class: "px-4 py-1 my-2 bg-gray-500 rounded-b-lg text-white",
+                            class: "px-4 py-1 my-2 bg-gray-700 rounded-b-lg text-white",
                             onclick: move |_| show_dropdown.set(!show_dropdown()),
                             strong {
                                 "{bible().unwrap().translation}"
@@ -172,10 +180,12 @@ pub fn SmartJump(
                         }
                         if show_dropdown() {
                             div {
-                                class: "border absolute bg-gray-400 shadow-md py-2 rounded-md mt-2",
+                                class: "border absolute bg-gray-700 text-white shadow-md py-2 rounded-md mt-2",
                                 button {
                                     class: "rounded-md px-4 py-2 hover:bg-gray-100",
-                                    "CSB"
+                                    strong {
+                                        "CSB"
+                                    }
                                 }
                                 // Add more options as needed
                             }

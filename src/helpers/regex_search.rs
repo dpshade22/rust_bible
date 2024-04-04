@@ -318,7 +318,9 @@ pub fn parse_bible_reference(
 
     // Check for alternative book names
     for (alt_name, book) in ALTERNATIVE_BOOK_NAMES {
-        if let Some(index) = query_lower.find(alt_name.to_lowercase().as_str()) {
+        if let Some(index) =
+            query_lower.find(format!("{} ", alt_name.to_lowercase().as_str()).as_str())
+        {
             let remaining_query = &query_lower[index + alt_name.len()..].trim();
             if let Some((chapter, verse_start, verse_end)) =
                 parse_chapter_and_verses(remaining_query)
@@ -356,7 +358,9 @@ pub fn parse_bible_reference(
 
     // Check for OSIS book names
     for (_, osis_name) in OSIS_BOOK_NAMES {
-        if let Some(index) = query_lower.find(osis_name.to_lowercase().as_str()) {
+        if let Some(index) =
+            query_lower.find(format!("{} ", osis_name.to_lowercase().as_str()).as_str())
+        {
             let remaining_query = &query_lower[index + osis_name.len()..].trim();
             if let Some((chapter, verse_start, verse_end)) =
                 parse_chapter_and_verses(remaining_query)
