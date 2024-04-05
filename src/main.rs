@@ -8,20 +8,21 @@ use crate::components::*;
 use crate::helpers::*;
 use crate::models::*;
 use dioxus::prelude::*;
+use dioxus_desktop::{Config, WindowBuilder};
 use log::debug;
 
 fn main() {
     // Urls are relative to your Cargo.toml file
-    // const _TAILWIND_URL: &str = manganis::mg!(file("../public/tailwind.css"));
-
     #[cfg(target_arch = "wasm32")]
     {
         wasm_logger::init(wasm_logger::Config::default());
-        dioxus_web::launch::launch(App, vec![], Default::default());
+        launch(App);
     }
 
-    // #[cfg(not(target_arch = "wasm32"))]
-    // dioxus_desktop::launch::launch(App, vec![], Default::default());
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        launch(App);
+    }
 }
 
 #[component]
@@ -35,6 +36,8 @@ fn App() -> Element {
     let search_text = use_signal(|| "".to_string());
     let selected_translation = use_signal(|| "ESV".to_string());
     let mut unique_books = use_signal(|| vec![]);
+
+    const STYLE: &str = manganis::mg!(file("public/tailwind.css"));
 
     use_future(move || async move {
         // TODO: Handle error case better if fetch fails
@@ -56,11 +59,16 @@ fn App() -> Element {
     });
 
     rsx! {
+        link {
+            href: "{STYLE}",
+            rel: "stylesheet",
+            r#type: "text/css",
+        },
+
             if bible().is_none() {
                 LoadingScreen {}
             } else {
             div {
-                style: include_str!("../public/tailwind.css") ,
                 class: "flex w-full bg-gray-100/40",
                 display: "flex",
                 flex_direction: "row",
