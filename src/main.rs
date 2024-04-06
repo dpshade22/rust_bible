@@ -30,8 +30,8 @@ fn App() -> Element {
     let show_jump = use_signal(|| true);
     let search_text = use_signal(|| "".to_string());
     let selected_translation = use_signal(|| "ESV".to_string());
-    let mut unique_books = use_signal(|| vec![]);
     let sidebar_hidden: Signal<bool> = use_signal(|| false);
+    let mut unique_books = use_signal(|| vec![]);
 
     const STYLE: &str = manganis::mg!(file("public/tailwind.css"));
 

@@ -14,14 +14,16 @@ pub fn Sidebar(
 ) -> Element {
     rsx! {
         button {
-            class: format!("absolute top-0 h-full w-2 bg-gray-300 hover:bg-gray-400 cursor-pointer {}", if sidebar_hidden() { "left-0" } else { "left-60" }),
+            class: format!("sidebar-toggle {}",
+                if sidebar_hidden() { "collapsed left-0" } else { "lg:left-60 md:left-48 sm:left-40" }),
             onclick: move |_| {
                 sidebar_hidden.set(!sidebar_hidden());
                 debug!("Sidebar current state {}", sidebar_hidden())
             },
         }
         div {
-            class: format!("{}", if sidebar_hidden() { "hidden" } else { "flex bg-gray-100 lg:block max-h-screen overflow-y-auto w-60" }),
+            class: format!("{}",
+                if sidebar_hidden() { "hidden" } else { "lg:w-60 md:w-48 sm:w-40 bg-gray-100 lg:block max-h-screen overflow-y-auto no-scrollbar" }),
             nav {
                 div {
                     class: "flex-1 grid items-start py-2 text-sm font-medium no-scrollbar",
