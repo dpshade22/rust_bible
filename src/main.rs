@@ -8,7 +8,6 @@ use crate::components::*;
 use crate::helpers::*;
 use crate::models::*;
 use dioxus::prelude::*;
-use dioxus_desktop::{Config, WindowBuilder};
 use log::debug;
 
 fn main() {
@@ -16,13 +15,9 @@ fn main() {
     #[cfg(target_arch = "wasm32")]
     {
         wasm_logger::init(wasm_logger::Config::default());
-        launch(App);
     }
 
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-        launch(App);
-    }
+    launch(App);
 }
 
 #[component]
@@ -36,6 +31,7 @@ fn App() -> Element {
     let search_text = use_signal(|| "".to_string());
     let selected_translation = use_signal(|| "ESV".to_string());
     let mut unique_books = use_signal(|| vec![]);
+    let sidebar_hidden: Signal<bool> = use_signal(|| false);
 
     const STYLE: &str = manganis::mg!(file("public/tailwind.css"));
 
@@ -73,15 +69,15 @@ fn App() -> Element {
                 display: "flex",
                 flex_direction: "row",
                 // Focusable input to receive keyboard events
-                Sidebar {bible, unique_books, current_chapter, current_chapter_text, entered_chapter_num},
+                Sidebar { sidebar_hidden, bible, unique_books, current_chapter, current_chapter_text, entered_chapter_num},
                 div {
                     class: "flex-1 max-h-screen overflow-y-auto",
                     div {
                         class: "flex px-4 pt-2",
-                        ChapterNav { bible, current_chapter, current_chapter_text, entered_chapter_num, show_jump }
+                        ChapterNav { sidebar_hidden, bible, current_chapter, current_chapter_text, entered_chapter_num, show_jump }
                     }
                     hr {}
-                    ChapterText { bible, smart_verses }
+                    ChapterText { sidebar_hidden, bible, smart_verses }
                 }
                 SmartJump { bible, show_jump, current_chapter, current_chapter_text, entered_chapter_num, smart_verses, unique_books, search_text, selected_translation }
             }

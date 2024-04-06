@@ -11,6 +11,7 @@ enum ChapterNavigationDirection {
 
 #[component]
 pub fn ChapterNav(
+    sidebar_hidden: Signal<bool>,
     bible: Signal<Option<Bible>>,
     current_chapter: Signal<String>,
     current_chapter_text: Signal<String>,
@@ -84,7 +85,7 @@ pub fn ChapterNav(
 
     rsx! {
         div {
-            class: "flex py-6 items-center w-full",
+            class: format!("flex py-6 items-center w-full {}", if sidebar_hidden() { "justify-center" } else { ""}),
             button {
                 class: "text-gray-500 hover:text-gray-700 order-1",
                 onclick: move |_| {
@@ -104,7 +105,7 @@ pub fn ChapterNav(
                 }
             }
             button {
-                class: "flex text-justify text-4xl font-extrabold tracking-tight lg:text-5xl mx-4 w-50% order-2 pl-4 py-2",
+                class: "flex text-justify justify-center text-4xl font-extrabold tracking-tight lg:text-5xl mx-4 w-50% order-2 pl-4 py-2",
                 onclick: move |_| {
                     handle_chapter_navigation(ChapterNavigationDirection::One, bible, current_chapter, current_chapter_text, entered_chapter_num);
                 },

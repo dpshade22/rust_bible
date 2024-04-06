@@ -5,6 +5,7 @@ use log::debug;
 
 #[component]
 pub fn Sidebar(
+    sidebar_hidden: Signal<bool>,
     bible: Signal<Option<Bible>>,
     unique_books: Signal<Vec<String>>,
     current_chapter: Signal<String>,
@@ -12,8 +13,15 @@ pub fn Sidebar(
     entered_chapter_num: Signal<String>,
 ) -> Element {
     rsx! {
+        button {
+            class: format!("absolute top-0 h-full w-2 bg-gray-300 hover:bg-gray-400 cursor-pointer {}", if sidebar_hidden() { "left-0" } else { "left-60" }),
+            onclick: move |_| {
+                sidebar_hidden.set(!sidebar_hidden());
+                debug!("Sidebar current state {}", sidebar_hidden())
+            },
+        }
         div {
-            class: "flex bg-gray-100 w-60 lg:block max-h-screen overflow-y-auto",
+            class: format!("{}", if sidebar_hidden() { "hidden" } else { "flex bg-gray-100 lg:block max-h-screen overflow-y-auto w-60" }),
             nav {
                 div {
                     class: "flex-1 grid items-start py-2 text-sm font-medium no-scrollbar",

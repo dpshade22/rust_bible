@@ -2,6 +2,11 @@ use crate::models::*;
 use anyhow::Result;
 use dioxus::prelude::*;
 
+#[derive(Clone)]
+pub struct UiProps {
+    pub sidebar_hidden: Signal<bool>,
+}
+
 pub fn update_bible(
     mut bible: Signal<Option<Bible>>,
     mut temp_bible: Bible,
