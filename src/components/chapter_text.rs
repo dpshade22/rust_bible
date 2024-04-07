@@ -9,6 +9,8 @@ pub fn ChapterText(
     bible: Signal<Option<Bible>>,
     smart_verses: Signal<Vec<Verse>>,
 ) -> Element {
+    let theme = use_context::<Theme>();
+
     fn verse_cleaning(verse: String) -> String {
         let verse = verse.replace("--", "-");
         let verse = verse.replace("\u{00b6} ", "");
@@ -22,7 +24,7 @@ pub fn ChapterText(
             if let Some(curr_bible) = bible() {
                 if let Some(chapter) = curr_bible.get_current_chapter() {
                     div {
-                        class: "max-w-3xl prose-stone no-scrollbar",
+                        class: format!("max-w-3xl prose-stone no-scrollbar text-{}", theme.prim_50),
                         {
                             chapter.verses.iter().map(|verse| {
                                 let is_smart_verse = smart_verses().iter().any(|v| {
@@ -37,7 +39,7 @@ pub fn ChapterText(
                                     div {
                                         class: "flex items-start line",
                                         div {
-                                            class: "w-8 flex-shrink-0 text-stone-400 text-right py-2  mr-2 font-bold",
+                                            class: format!("w-8 flex-shrink-0 text-{} text-right py-2  mr-2 font-bold", theme.prim_400),
                                             "{verse.verse_num}"
                                         }
                                         p {

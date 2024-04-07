@@ -12,16 +12,18 @@ pub fn Sidebar(
     current_chapter_text: Signal<String>,
     entered_chapter_num: Signal<String>,
 ) -> Element {
+    let theme = use_context::<Theme>();
+
     rsx! {
         button {
-            class: format!("sidebar-toggle bg-stone-400 hover:bg-stone-300 hover:transition-all sm:hidden md:flex {}", if sidebar_hidden() { "collapsed" } else { "" }),
+            class: format!("sidebar-toggle bg-{} hover:bg-{} hover:transition-all sm:hidden md:flex {}", theme.prim_400, theme.prim_300, if sidebar_hidden() { "collapsed" } else { "" }),
             style: format!("position: absolute; left: {}rem; transition: left 0.3s ease-in-out;", if sidebar_hidden() { "0" } else { "15" }),
             onclick: move |_| {
                 sidebar_hidden.set(!sidebar_hidden());
             },
         }
         div {
-            class: format!("bg-stone-100 max-h-screen overflow-y-auto no-scrollbar {}", if sidebar_hidden() { "" } else { "sm:w-full md:w-60"}),
+            class: format!("bg-{} max-h-screen overflow-y-auto no-scrollbar {}", theme.prim_100, if sidebar_hidden() { "" } else { "sm:w-full md:w-60"}),
             style: format!("margin-left: {}rem; transition: margin-left 0.3s ease-in-out;", if sidebar_hidden() { "-20" } else { "0" }),
 
             nav {
@@ -30,7 +32,6 @@ pub fn Sidebar(
                     if let Some(curr_bible) = bible() {
                         for book in unique_books() {
                             button {
-                                class: "py-2",
                                 disabled: curr_bible.get_current_chapter().map_or(false, |chapter| chapter.book == book),
                                 onclick: move |_| {
                                     match bible() {
@@ -50,13 +51,13 @@ pub fn Sidebar(
                                 },
                                 if curr_bible.get_current_chapter().map_or(false, |chapter| chapter.book == book) {
                                     div {
-                                        class: "rounded-r-lg flex justify-between align-middle text-base pl-3 text-white bg-stone-600",
+                                        class: format!("rounded-r-lg flex justify-between align-middle text-base pl-3 text-white bg-{}", theme.prim_700),
                                         strong {
                                             class: "flex items-center",
                                             "{book.to_uppercase()}"
                                         }
                                         input {
-                                            class: "rounded-l-lg w-14 ml-4 px-2 py-2 cursor-pointer text-stone-800 text-right bg-stone-300 appearance-none outline-bg-stone-600",
+                                            class: format!("rounded-l-lg w-14 ml-4 px-2 py-2 cursor-pointer text-{} text-right bg-{} appearance-none outline-bg-{}", theme.prim_800, theme.prim_300, theme.prim_600),
                                             r#type: "number",
                                             maxlength: "3",
                                             value: entered_chapter_num,
@@ -84,7 +85,10 @@ pub fn Sidebar(
                                         }
                                     }
                                 } else {
-                                    "{book}"
+                                    div {
+                                        class: format!("py-2 hover:bg-{}", theme.prim_300),
+                                        "{book}"
+                                    }
                                 }
                             }
                         }

@@ -18,6 +18,8 @@ pub fn ChapterNav(
     entered_chapter_num: Signal<String>,
     show_jump: Signal<bool>,
 ) -> Element {
+    let theme = use_context::<Theme>();
+
     fn handle_chapter_navigation(
         direction: ChapterNavigationDirection,
         bible: Signal<Option<Bible>>,
@@ -89,7 +91,7 @@ pub fn ChapterNav(
                 if sidebar_hidden() { "justify-center" } else { "" },
             ),
             button {
-                class: "text-stone-500 hover:text-stone-700 order-1",
+                class: format!("text-{} hover:text-{} order-1", theme.prim_500, theme.prim_700),
                 onclick: move |_| {
                     handle_chapter_navigation(
                         ChapterNavigationDirection::Previous,
@@ -126,10 +128,10 @@ pub fn ChapterNav(
                         entered_chapter_num,
                     );
                 },
-                h1 { class: "text-stone-800", "{current_chapter}" }
+                h1 { class: format!("text-{}", theme.prim_800), "{current_chapter}" }
             }
             button {
-                class: "text-stone-500 hover:text-stone-700 order-3",
+                class: format!("text-{} hover:text-{} order-3", theme.prim_500, theme.prim_700),
                 onclick: move |_| {
                     handle_chapter_navigation(
                         ChapterNavigationDirection::Next,

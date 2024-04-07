@@ -16,6 +16,7 @@ pub fn SmartJump(
     search_text: Signal<String>,
     selected_translation: Signal<String>,
 ) -> Element {
+    let theme = use_context::<Theme>();
     let show_dropdown = use_signal(|| false);
 
     rsx! {
@@ -23,7 +24,7 @@ pub fn SmartJump(
             div { class: "fixed inset-0 flex items-center justify-center z-50",
 
                 div {
-                    class: "fixed inset-0 bg-stone-900 opacity-50",
+                    class: format!("fixed inset-0 bg-{} opacity-50", theme.prim_700),
                     onclick: move |_| show_jump.set(false)
                 }
 
@@ -75,6 +76,8 @@ fn SearchResults(
     current_chapter_text: Signal<String>,
     entered_chapter_num: Signal<String>,
 ) -> Element {
+    let theme = use_context::<Theme>();
+
     rsx! {
         div { class: "rounded-lg mt-2 overflow-y-auto max-h-64",
 
@@ -111,22 +114,24 @@ fn TranslationDropdown(
     selected_translation: Signal<String>,
     show_dropdown: Signal<bool>,
 ) -> Element {
+    let theme = use_context::<Theme>();
+
     rsx! {
         div { class: "relative",
 
             button {
-                class: "px-4 py-1 my-2 bg-stone-700 rounded-b-lg text-white",
+                class: format!("px-4 py-1 my-2 bg-{} rounded-b-lg text-white", theme.prim_700),
                 onclick: move |_| show_dropdown.set(!show_dropdown()),
                 strong { "{selected_translation()}" }
             }
 
             if show_dropdown() {
-                div { class: "border absolute bg-stone-700 text-white shadow-md py-2 rounded-md mt-1",
+                div { class: format!("border absolute bg-{} text-white shadow-md py-2 rounded-md mt-1", theme.prim_700),
 
                     for translation_key in TRANSLATIONS.keys() {
                         if translation_key.to_string() != selected_translation() {
                             button {
-                                class: "rounded-md px-4 py-2 hover:bg-stone-500",
+                                class: format!("rounded-md px-4 py-2 hover:bg-{}", theme.prim_500),
                                 onclick: move |_| {
                                     selected_translation.set(translation_key.to_string());
                                     show_dropdown.set(false);

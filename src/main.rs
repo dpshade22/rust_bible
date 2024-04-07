@@ -32,6 +32,7 @@ fn App() -> Element {
     let selected_translation = use_signal(|| "ESV".to_string());
     let sidebar_hidden: Signal<bool> = use_signal(|| false);
     let mut unique_books = use_signal(|| vec![]);
+    let theme = use_context_provider(|| Theme::light());
 
     const STYLE: &str = manganis::mg!(file("public/tailwind.css"));
 
@@ -61,7 +62,7 @@ fn App() -> Element {
             LoadingScreen {}
         } else {
             div {
-                class: "flex w-full flex-col sm:flex-row bg-stone-100/40",
+                class: format!("flex w-full flex-col sm:flex-row bg-{} text-{}", theme.prim_50, theme.prim_50),
                 // Focusable input to receive keyboard events
                 Sidebar {
                     sidebar_hidden,
