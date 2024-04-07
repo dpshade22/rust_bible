@@ -41,7 +41,7 @@ pub fn ChapterText(
                                             "{verse.verse_num}"
                                         }
                                         p {
-                                            class: "{class} flex-grow pl-4 py-1 leading-loose",
+                                            class: "{class} flex-grow pl-4 pt-1 leading-loose",
                                             "{verse_cleaning(verse.text.to_string())}"
                                         }
                                     }
