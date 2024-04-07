@@ -65,7 +65,7 @@ fn App() -> Element {
                 LoadingScreen {}
             } else {
             div {
-                class: "flex w-full bg-gray-100/40",
+                class: "flex w-full bg-stone-100/40",
                 display: "flex",
                 flex_direction: "row",
                 // Focusable input to receive keyboard events

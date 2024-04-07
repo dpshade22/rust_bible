@@ -14,7 +14,7 @@ pub fn Sidebar(
 ) -> Element {
     rsx! {
         button {
-            class: format!("sidebar-toggle {} bg-gray-300 hover:bg-gray-500 hover:transition-all",
+            class: format!("sidebar-toggle {} bg-stone-400 hover:bg-stone-300 hover:transition-all",
             if sidebar_hidden() { "collapsed left-0" } else { "lg:left-60 md:left-48 sm:left-40" }),
                 onclick: move |_| {
                 sidebar_hidden.set(!sidebar_hidden());
@@ -23,7 +23,7 @@ pub fn Sidebar(
         }
         div {
             class: format!("{}",
-                if sidebar_hidden() { "hidden" } else { "lg:w-60 md:w-48 sm:w-40 bg-gray-100 lg:block max-h-screen overflow-y-auto no-scrollbar" }),
+                if sidebar_hidden() { "hidden" } else { "lg:w-60 md:w-48 sm:w-40 bg-stone-200 lg:block max-h-screen overflow-y-auto no-scrollbar" }),
             nav {
                 div {
                     class: "flex-1 grid items-start py-2 text-sm font-medium no-scrollbar",
@@ -50,13 +50,13 @@ pub fn Sidebar(
                                 },
                                 if curr_bible.get_current_chapter().map_or(false, |chapter| chapter.book == book) {
                                     div {
-                                        class: "rounded-r-lg flex justify-between align-middle text-base pl-3 text-white bg-gray-700",
+                                        class: "rounded-r-lg flex justify-between align-middle text-base pl-3 text-white bg-stone-600",
                                         strong {
                                             class: "flex items-center",
                                             "{book.to_uppercase()}"
                                         }
                                         input {
-                                            class: "rounded-l-lg w-16 ml-4 px-2 py-2 cursor-pointer text-right bg-gray-500 appearance-none outline-bg-gray-600",
+                                            class: "rounded-l-lg w-16 ml-4 px-2 py-2 cursor-pointer text-stone-900 text-right bg-stone-300 appearance-none outline-bg-stone-600",
                                             r#type: "number",
                                             maxlength: "3",
                                             value: entered_chapter_num,

@@ -24,7 +24,7 @@ pub fn SmartJump(
                 class: "fixed inset-0 flex items-center justify-center z-50",
 
                 div {
-                    class: "fixed inset-0 bg-gray-900 opacity-50",
+                    class: "fixed inset-0 bg-stone-900 opacity-50",
                     onclick: move |_| show_jump.set(false),
                 }
 
@@ -76,7 +76,7 @@ fn SearchResults(
 
             for verse in smart_verses() {
                 div {
-                    class: "flex flex-col justify-center w-full bg-white px-4 py-2 max-h-fit hover:bg-gray-50",
+                    class: "flex flex-col justify-center w-full bg-white px-4 py-2 max-h-fit hover:bg-stone-50",
 
                     button {
                         class: "rounded-lg",
@@ -119,7 +119,7 @@ fn TranslationDropdown(
             class: "relative",
 
             button {
-                class: "px-4 py-1 my-2 bg-gray-700 rounded-b-lg text-white",
+                class: "px-4 py-1 my-2 bg-stone-700 rounded-b-lg text-white",
                 onclick: move |_| show_dropdown.set(!show_dropdown()),
                 strong {
                     "{selected_translation()}"
@@ -128,12 +128,12 @@ fn TranslationDropdown(
 
             if show_dropdown() {
                 div {
-                    class: "border absolute bg-gray-700 text-white shadow-md py-2 rounded-md mt-1",
+                    class: "border absolute bg-stone-700 text-white shadow-md py-2 rounded-md mt-1",
 
                     for translation_key in TRANSLATIONS.keys() {
                         if translation_key.to_string() != selected_translation() {
                             button {
-                                class: "rounded-md px-4 py-2 hover:bg-gray-500",
+                                class: "rounded-md px-4 py-2 hover:bg-stone-500",
                                 onclick: move |_| {
                                     selected_translation.set(translation_key.to_string());
                                     show_dropdown.set(false);

@@ -22,14 +22,14 @@ pub fn ChapterText(
             if let Some(curr_bible) = bible() {
                 if let Some(chapter) = curr_bible.get_current_chapter() {
                     div {
-                        class: "max-w-3xl prose-gray no-scrollbar",
+                        class: "max-w-3xl prose-stone no-scrollbar",
                         {
                             chapter.verses.iter().map(|verse| {
                                 let is_smart_verse = smart_verses().iter().any(|v| {
                                     &v.r#ref == &verse.r#ref
                                 });
                                 let class = if is_smart_verse {
-                                    "text-rose-600 font-medium"
+                                    "text-orange-600 font-medium"
                                 } else {
                                     ""
                                 };
@@ -37,7 +37,7 @@ pub fn ChapterText(
                                     div {
                                         class: "flex items-start line",
                                         div {
-                                            class: "w-8 flex-shrink-0 text-right py-2  mr-2 font-bold",
+                                            class: "w-8 flex-shrink-0 text-stone-400 text-right py-2  mr-2 font-bold",
                                             "{verse.verse_num}"
                                         }
                                         p {

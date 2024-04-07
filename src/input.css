@@ -82,3 +82,43 @@ input[type="number"]:focus {
     background-color: #fff;
     box-shadow: 0 0.375rem 0 0 #fff, 0 0.75rem 0 0 #fff;
 }
+
+.loading-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #333;
+    margin: 0 5px;
+    animation: bounce 1.5s infinite ease-in-out;
+}
+
+.dot-1 {
+    animation-delay: 0s;
+}
+
+.dot-2 {
+    animation-delay: 0.5s;
+}
+
+.dot-3 {
+    animation-delay: 1s;
+}
+
+@keyframes bounce {
+
+    0%,
+    80%,
+    100% {
+        transform: scale(0);
+    }
+
+    40% {
+        transform: scale(1);
+    }
+}

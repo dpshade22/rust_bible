@@ -87,7 +87,7 @@ pub fn ChapterNav(
         div {
             class: format!("flex py-6 items-center w-full {}", if sidebar_hidden() { "justify-center" } else { ""}),
             button {
-                class: "text-gray-500 hover:text-gray-700 order-1",
+                class: "text-stone-500 hover:text-stone-700 order-1",
                 onclick: move |_| {
                     handle_chapter_navigation(ChapterNavigationDirection::Previous, bible, current_chapter, current_chapter_text, entered_chapter_num);
                 },
@@ -110,6 +110,7 @@ pub fn ChapterNav(
                     handle_chapter_navigation(ChapterNavigationDirection::One, bible, current_chapter, current_chapter_text, entered_chapter_num);
                 },
                 h1 {
+                    class: "text-stone-800",
                     "{current_chapter}"
                 }
             }
@@ -117,7 +118,7 @@ pub fn ChapterNav(
                 ""
             }
             button {
-                class: "text-gray-500 hover:text-gray-700 order-3",
+                class: "text-stone-500 hover:text-stone-700 order-3",
                 onclick: move |_| {
                     handle_chapter_navigation(ChapterNavigationDirection::Next, bible, current_chapter, current_chapter_text, entered_chapter_num);
                 },

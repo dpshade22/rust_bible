@@ -6,7 +6,16 @@ pub fn LoadingScreen() -> Element {
         div {
             class: "flex items-center justify-center h-screen",
             div {
-                class: "animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"
+                class: "loading-dots",
+                div {
+                    class: "dot dot-1"
+                }
+                div {
+                    class: "dot dot-2"
+                }
+                div {
+                    class: "dot dot-3"
+                }
             }
         }
     }
