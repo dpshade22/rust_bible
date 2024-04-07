@@ -12,18 +12,25 @@ pub fn Sidebar(
     current_chapter_text: Signal<String>,
     entered_chapter_num: Signal<String>,
 ) -> Element {
+    let mut sidebar_translation_x = use_signal(|| 0);
+
     rsx! {
         button {
-            class: format!("sidebar-toggle {} bg-stone-400 hover:bg-stone-300 hover:transition-all",
-            if sidebar_hidden() { "collapsed left-0" } else { "lg:left-60 md:left-48 sm:left-40" }),
-                onclick: move |_| {
+            class: format!("sidebar-toggle {} bg-stone-400 hover:bg-stone-300 hover:transition-all", if sidebar_hidden() { "collapsed left-0" } else { "lg:left-60 md:left-48 sm:left-40" }),
+            onclick: move |_| {
+                debug!("Sidebar current state {}", sidebar_hidden());
+                debug!("Sidebar current state {}", sidebar_translation_x());
+                if sidebar_hidden() {
+                    sidebar_translation_x.set(0);
+                } else {
+                    sidebar_translation_x.set(-15); // Adjust the value based on your sidebar width
+                }
                 sidebar_hidden.set(!sidebar_hidden());
-                debug!("Sidebar current state {}", sidebar_hidden())
             },
         }
         div {
-            class: format!("{}",
-                if sidebar_hidden() { "hidden" } else { "lg:w-60 md:w-48 sm:w-40 bg-stone-200 lg:block max-h-screen overflow-y-auto no-scrollbar" }),
+            class: format!("bg-stone-100 max-h-screen overflow-y-auto no-scrollbar {}", if sidebar_hidden() { "hidden" } else { "lg:w-60 md:w-48 sm:w-40"}),
+            style: format!("transform: translateX({}rem); transition: transform 0.45s ease-in-out;", sidebar_translation_x()),
             nav {
                 div {
                     class: "flex-1 grid items-start py-2 text-sm font-medium no-scrollbar",
@@ -56,7 +63,7 @@ pub fn Sidebar(
                                             "{book.to_uppercase()}"
                                         }
                                         input {
-                                            class: "rounded-l-lg w-16 ml-4 px-2 py-2 cursor-pointer text-stone-900 text-right bg-stone-300 appearance-none outline-bg-stone-600",
+                                            class: "rounded-l-lg w-16 ml-4 px-2 py-2 cursor-pointer text-stone-800 text-right bg-stone-300 appearance-none outline-bg-stone-600",
                                             r#type: "number",
                                             maxlength: "3",
                                             value: entered_chapter_num,

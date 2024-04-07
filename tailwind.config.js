@@ -7,7 +7,7 @@ module.exports = {
     // include all html files in the output (dist) directory
     "./dist/**/*.html",
   ],
-  safelist: ['bg-gray-*', 'bg-slate-*', 'bg-*', 'text-*', 'text-gray-*', 'rotate-*', 'whitespace-nowrap', 'rounded-b-lg', 'no-scrollbar'],
+  safelist: ['bg-gray-*', 'bg-slate-*', 'bg-*', 'text-*', 'text-gray-*', 'rotate-*', 'whitespace-nowrap', 'rounded-b-lg', 'no-scrollbar', 'hidden'],
   theme: {
     extend: {
       animation: {
