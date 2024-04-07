@@ -17,17 +17,6 @@ input[type="number"]:focus {
     border: none;
 }
 
-.smart-highlight {
-    position: relative;
-}
-
-.smart-highlight::before {
-    content: "";
-    position: absolute;
-    background: rgb(244 63 94);
-    z-index: -1;
-}
-
 .no-scrollbar {
     -ms-overflow-style: none;
     /* IE and Edge */

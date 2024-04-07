@@ -84,12 +84,20 @@ pub fn ChapterNav(
     }
 
     rsx! {
-        div {
-            class: format!("flex py-6 items-center w-full {}", if sidebar_hidden() { "justify-center" } else { ""}),
+        div { class: format!(
+                "flex py-6 items-center w-full {}",
+                if sidebar_hidden() { "justify-center" } else { "" },
+            ),
             button {
                 class: "text-stone-500 hover:text-stone-700 order-1",
                 onclick: move |_| {
-                    handle_chapter_navigation(ChapterNavigationDirection::Previous, bible, current_chapter, current_chapter_text, entered_chapter_num);
+                    handle_chapter_navigation(
+                        ChapterNavigationDirection::Previous,
+                        bible,
+                        current_chapter,
+                        current_chapter_text,
+                        entered_chapter_num,
+                    );
                 },
                 svg {
                     class: "h-6 w-6",
@@ -100,27 +108,36 @@ pub fn ChapterNav(
                         stroke_linecap: "round",
                         stroke_linejoin: "round",
                         stroke_width: "2",
-                        d: "M15 19l-7-7 7-7",
+                        d: "M15 19l-7-7 7-7"
                     }
                 }
             }
             button {
-                class: format!("flex text-justify text-4xl font-extrabold tracking-tight lg:text-5xl mx-4 w-50% order-2 py-2 {}", if sidebar_hidden() { "justify-center" } else { "pl-4" }),
+                class: format!(
+                    "flex text-justify text-4xl font-extrabold tracking-tight lg:text-5xl mx-4 w-50% order-2 py-2 {}",
+                    if sidebar_hidden() { "justify-center transition-all" } else { "pl-4" },
+                ),
                 onclick: move |_| {
-                    handle_chapter_navigation(ChapterNavigationDirection::One, bible, current_chapter, current_chapter_text, entered_chapter_num);
+                    handle_chapter_navigation(
+                        ChapterNavigationDirection::One,
+                        bible,
+                        current_chapter,
+                        current_chapter_text,
+                        entered_chapter_num,
+                    );
                 },
-                h1 {
-                    class: "text-stone-800",
-                    "{current_chapter}"
-                }
-            }
-            div {
-                ""
+                h1 { class: "text-stone-800", "{current_chapter}" }
             }
             button {
                 class: "text-stone-500 hover:text-stone-700 order-3",
                 onclick: move |_| {
-                    handle_chapter_navigation(ChapterNavigationDirection::Next, bible, current_chapter, current_chapter_text, entered_chapter_num);
+                    handle_chapter_navigation(
+                        ChapterNavigationDirection::Next,
+                        bible,
+                        current_chapter,
+                        current_chapter_text,
+                        entered_chapter_num,
+                    );
                 },
                 svg {
                     class: "h-6 w-6",
@@ -131,7 +148,7 @@ pub fn ChapterNav(
                         stroke_linecap: "round",
                         stroke_linejoin: "round",
                         stroke_width: "2",
-                        d: "M9 5l7 7-7 7",
+                        d: "M9 5l7 7-7 7"
                     }
                 }
             }
@@ -149,9 +166,7 @@ pub fn ChapterNav(
                 stroke_width: "2",
                 stroke_linecap: "round",
                 stroke_linejoin: "round",
-                path {
-                    d: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                }
+                path { d: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" }
             }
         }
     }

@@ -996,6 +996,12 @@ video {
   transition-duration: 150ms;
 }
 
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -1009,17 +1015,6 @@ input[type="number"] {
 input[type="number"]:focus {
   outline: none;
   border: none;
-}
-
-.smart-highlight {
-  position: relative;
-}
-
-.smart-highlight::before {
-  content: "";
-  position: absolute;
-  background: rgb(244 63 94);
-  z-index: -1;
 }
 
 .no-scrollbar {

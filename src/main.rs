@@ -55,31 +55,49 @@ fn App() -> Element {
     });
 
     rsx! {
-        link {
-            href: "{STYLE}",
-            rel: "stylesheet",
-            r#type: "text/css",
-        },
+        link { href: "{STYLE}", rel: "stylesheet", r#type: "text/css" }
 
-            if bible().is_none() {
-                LoadingScreen {}
-            } else {
+        if bible().is_none() {
+            LoadingScreen {}
+        } else {
             div {
                 class: "flex w-full bg-stone-100/40",
                 display: "flex",
                 flex_direction: "row",
                 // Focusable input to receive keyboard events
-                Sidebar { sidebar_hidden, bible, unique_books, current_chapter, current_chapter_text, entered_chapter_num},
-                div {
-                    class: "flex-1 max-h-screen overflow-y-auto",
-                    div {
-                        class: "flex px-4 pt-2",
-                        ChapterNav { sidebar_hidden, bible, current_chapter, current_chapter_text, entered_chapter_num, show_jump }
+                Sidebar {
+                    sidebar_hidden,
+                    bible,
+                    unique_books,
+                    current_chapter,
+                    current_chapter_text,
+                    entered_chapter_num
+                }
+                div { class: "flex-1 max-h-screen overflow-y-auto",
+                    div { class: "flex px-4 pt-2",
+                        ChapterNav {
+                            sidebar_hidden,
+                            bible,
+                            current_chapter,
+                            current_chapter_text,
+                            entered_chapter_num,
+                            show_jump
+                        }
                     }
                     hr {}
                     ChapterText { sidebar_hidden, bible, smart_verses }
                 }
-                SmartJump { bible, show_jump, current_chapter, current_chapter_text, entered_chapter_num, smart_verses, unique_books, search_text, selected_translation }
+                SmartJump {
+                    bible,
+                    show_jump,
+                    current_chapter,
+                    current_chapter_text,
+                    entered_chapter_num,
+                    smart_verses,
+                    unique_books,
+                    search_text,
+                    selected_translation
+                }
             }
         }
     }

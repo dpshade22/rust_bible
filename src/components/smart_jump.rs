@@ -20,16 +20,14 @@ pub fn SmartJump(
 
     rsx! {
         if show_jump() {
-            div {
-                class: "fixed inset-0 flex items-center justify-center z-50",
+            div { class: "fixed inset-0 flex items-center justify-center z-50",
 
                 div {
                     class: "fixed inset-0 bg-stone-900 opacity-50",
-                    onclick: move |_| show_jump.set(false),
+                    onclick: move |_| show_jump.set(false)
                 }
 
-                div {
-                    class: "rounded-lg bg-white shadow-lg p-4 my-4 z-10 w-1/2",
+                div { class: "rounded-lg bg-white shadow-lg p-4 my-4 z-10 w-1/2",
 
                     input {
                         class: "px-4 py-2 w-full focus:outline-none border-b appearance-none",
@@ -48,13 +46,20 @@ pub fn SmartJump(
                             entered_chapter_num,
                             unique_books,
                             search_text,
-                            selected_translation
-                        ),
+                            selected_translation,
+                        )
                     }
 
-                    SearchResults { smart_verses, bible, show_jump, current_chapter, current_chapter_text, entered_chapter_num }
+                    SearchResults {
+                        smart_verses,
+                        bible,
+                        show_jump,
+                        current_chapter,
+                        current_chapter_text,
+                        entered_chapter_num
+                    }
 
-                    TranslationDropdown {selected_translation, show_dropdown }
+                    TranslationDropdown { selected_translation, show_dropdown }
                 }
             }
         }
@@ -71,12 +76,10 @@ fn SearchResults(
     entered_chapter_num: Signal<String>,
 ) -> Element {
     rsx! {
-        div {
-            class: "rounded-lg mt-2 overflow-y-auto max-h-64",
+        div { class: "rounded-lg mt-2 overflow-y-auto max-h-64",
 
             for verse in smart_verses() {
-                div {
-                    class: "flex flex-col justify-center w-full bg-white px-4 py-2 max-h-fit hover:bg-stone-50",
+                div { class: "flex flex-col justify-center w-full bg-white px-4 py-2 max-h-fit hover:bg-stone-50",
 
                     button {
                         class: "rounded-lg",
@@ -88,19 +91,13 @@ fn SearchResults(
                                     current_chapter,
                                     current_chapter_text,
                                     entered_chapter_num,
-                                    &verse.get_chapter()
+                                    &verse.get_chapter(),
                                 );
                             }
                             show_jump.set(false);
                         },
-                        p {
-                            class: "font-medium",
-                            "{verse.get_pretty_verse()}",
-                        }
-                        p {
-                            class: "italic",
-                            "{verse.text}"
-                        }
+                        p { class: "font-medium", "{verse.get_pretty_verse()}" }
+                        p { class: "italic", "{verse.text}" }
                     }
                 }
                 hr {}
@@ -115,20 +112,16 @@ fn TranslationDropdown(
     show_dropdown: Signal<bool>,
 ) -> Element {
     rsx! {
-        div {
-            class: "relative",
+        div { class: "relative",
 
             button {
                 class: "px-4 py-1 my-2 bg-stone-700 rounded-b-lg text-white",
                 onclick: move |_| show_dropdown.set(!show_dropdown()),
-                strong {
-                    "{selected_translation()}"
-                }
+                strong { "{selected_translation()}" }
             }
 
             if show_dropdown() {
-                div {
-                    class: "border absolute bg-stone-700 text-white shadow-md py-2 rounded-md mt-1",
+                div { class: "border absolute bg-stone-700 text-white shadow-md py-2 rounded-md mt-1",
 
                     for translation_key in TRANSLATIONS.keys() {
                         if translation_key.to_string() != selected_translation() {
@@ -138,9 +131,7 @@ fn TranslationDropdown(
                                     selected_translation.set(translation_key.to_string());
                                     show_dropdown.set(false);
                                 },
-                                strong {
-                                    "{translation_key}"
-                                }
+                                strong { "{translation_key}" }
                             }
                         }
                     }
