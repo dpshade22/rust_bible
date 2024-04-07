@@ -12,23 +12,18 @@ pub fn Sidebar(
     current_chapter_text: Signal<String>,
     entered_chapter_num: Signal<String>,
 ) -> Element {
-    let mut sidebar_translation_x = use_signal(|| 0);
-
     rsx! {
         button {
-            class: format!("sidebar-toggle {} bg-stone-400 hover:bg-stone-300 hover:transition-all", if sidebar_hidden() { "collapsed left-0" } else { "lg:left-60 md:left-48 sm:left-40" }),
+            class: format!("sidebar-toggle bg-stone-400 hover:bg-stone-300 hover:transition-all sm:hidden md:flex {}", if sidebar_hidden() { "collapsed" } else { "" }),
+            style: format!("position: absolute; left: {}rem; transition: left 0.3s ease-in-out;", if sidebar_hidden() { "0" } else { "15" }),
             onclick: move |_| {
-                if sidebar_hidden() {
-                    sidebar_translation_x.set(0);
-                } else {
-                    sidebar_translation_x.set(-20); // Adjust the value based on your sidebar width
-                }
                 sidebar_hidden.set(!sidebar_hidden());
             },
         }
         div {
-            class: format!("bg-stone-100 max-h-screen overflow-y-auto no-scrollbar {}", if sidebar_hidden() { "" } else { "lg:w-60 md:w-48 sm:w-40"}),
-            style: format!("transform: translateX({}rem); transition: transform 0.3s ease-in-out; {}", sidebar_translation_x(), if sidebar_hidden() { "display: none;" } else { "" }),
+            class: format!("bg-stone-100 max-h-screen overflow-y-auto no-scrollbar {}", if sidebar_hidden() { "" } else { "sm:w-full md:w-60"}),
+            style: format!("margin-left: {}rem; transition: margin-left 0.3s ease-in-out;", if sidebar_hidden() { "-20" } else { "0" }),
+
             nav {
                 div {
                     class: "flex-1 grid items-start py-2 text-sm font-medium no-scrollbar",
@@ -94,7 +89,7 @@ pub fn Sidebar(
                             }
                         }
                     }
-                },
+                }
             }
         }
     }

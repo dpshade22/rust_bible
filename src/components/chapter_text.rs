@@ -18,7 +18,7 @@ pub fn ChapterText(
 
     rsx! {
         div {
-            class: format!("my-4 {}", if sidebar_hidden() { "flex justify-center items-center" } else { "mx-6" }),
+            class: format!("my-4 {}", if sidebar_hidden() { "flex justify-center items-center" } else { "md:mx-2 sm:mx-6" }),
             if let Some(curr_bible) = bible() {
                 if let Some(chapter) = curr_bible.get_current_chapter() {
                     div {

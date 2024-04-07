@@ -61,9 +61,7 @@ fn App() -> Element {
             LoadingScreen {}
         } else {
             div {
-                class: "flex w-full bg-stone-100/40",
-                display: "flex",
-                flex_direction: "row",
+                class: "flex w-full flex-col sm:flex-row bg-stone-100/40",
                 // Focusable input to receive keyboard events
                 Sidebar {
                     sidebar_hidden,

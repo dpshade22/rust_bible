@@ -114,7 +114,7 @@ pub fn ChapterNav(
             }
             button {
                 class: format!(
-                    "flex text-justify text-4xl font-extrabold tracking-tight lg:text-5xl mx-4 w-50% order-2 py-2 {}",
+                    "flex text-justify text-4xl font-extrabold tracking-tight sm:text-xl lg:text-5xl mx-4 w-50% order-2 py-2 {}",
                     if sidebar_hidden() { "justify-center transition-all" } else { "pl-4" },
                 ),
                 onclick: move |_| {

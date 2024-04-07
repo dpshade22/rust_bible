@@ -27,7 +27,7 @@ pub fn SmartJump(
                     onclick: move |_| show_jump.set(false)
                 }
 
-                div { class: "rounded-lg bg-white shadow-lg p-4 my-4 z-10 w-1/2",
+                div { class: "rounded-lg bg-white shadow-lg p-4 my-4 z-10 sm:w-4/5 md:w-1/2",
 
                     input {
                         class: "px-4 py-2 w-full focus:outline-none border-b appearance-none",
