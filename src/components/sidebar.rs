@@ -29,8 +29,8 @@ pub fn Sidebar(
             },
         }
         div {
-            class: format!("bg-stone-100 max-h-screen overflow-y-auto no-scrollbar {}", if sidebar_hidden() { "hidden" } else { "lg:w-60 md:w-48 sm:w-40"}),
-            style: format!("transform: translateX({}rem); transition: transform 0.45s ease-in-out;", sidebar_translation_x()),
+            class: format!("bg-stone-100 max-h-screen overflow-y-auto no-scrollbar {}", if sidebar_hidden() { "" } else { "lg:w-60 md:w-48 sm:w-40"}),
+            style: format!("transform: translateX({}rem); transition: transform 1s ease-in-out; {}", sidebar_translation_x(), if sidebar_hidden() { "display: none;" } else { "" }),
             nav {
                 div {
                     class: "flex-1 grid items-start py-2 text-sm font-medium no-scrollbar",
