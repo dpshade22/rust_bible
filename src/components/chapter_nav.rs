@@ -105,7 +105,7 @@ pub fn ChapterNav(
                 }
             }
             button {
-                class: format!("flex text-justify text-4xl font-extrabold tracking-tight lg:text-5xl mx-4 w-50% order-2 pl-4 py-2 {}", if sidebar_hidden() { "justify-center" } else { "" }),
+                class: format!("flex text-justify text-4xl font-extrabold tracking-tight lg:text-5xl mx-4 w-50% order-2 py-2 {}", if sidebar_hidden() { "justify-center" } else { "pl-4" }),
                 onclick: move |_| {
                     handle_chapter_navigation(ChapterNavigationDirection::One, bible, current_chapter, current_chapter_text, entered_chapter_num);
                 },

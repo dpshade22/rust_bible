@@ -14,9 +14,9 @@ pub fn Sidebar(
 ) -> Element {
     rsx! {
         button {
-            class: format!("sidebar-toggle {}",
-                if sidebar_hidden() { "collapsed left-0" } else { "lg:left-60 md:left-48 sm:left-40" }),
-            onclick: move |_| {
+            class: format!("sidebar-toggle {} bg-gray-300 hover:bg-gray-500 hover:transition-all",
+            if sidebar_hidden() { "collapsed left-0" } else { "lg:left-60 md:left-48 sm:left-40" }),
+                onclick: move |_| {
                 sidebar_hidden.set(!sidebar_hidden());
                 debug!("Sidebar current state {}", sidebar_hidden())
             },
@@ -56,7 +56,7 @@ pub fn Sidebar(
                                             "{book.to_uppercase()}"
                                         }
                                         input {
-                                            class: "rounded-lg w-16 ml-4 px-2 py-2 cursor-pointer text-right bg-gray-500 appearance-none outline-bg-gray-600",
+                                            class: "rounded-l-lg w-16 ml-4 px-2 py-2 cursor-pointer text-right bg-gray-500 appearance-none outline-bg-gray-600",
                                             r#type: "number",
                                             maxlength: "3",
                                             value: entered_chapter_num,
