@@ -23,7 +23,7 @@ pub fn Sidebar(
             },
         }
         div {
-            class: format!("bg-{} max-h-screen overflow-y-auto no-scrollbar {}", theme.prim_100, if sidebar_hidden() { "" } else { "sm:w-full md:w-60"}),
+            class: format!("bg-{} sm:max-h-fit snap-end md:max-h-screen md:overflow-y-auto md:no-scrollbar {}", theme.prim_100, if sidebar_hidden() { "" } else { "sm:w-full md:w-60"}),
             style: format!("margin-left: {}rem; transition: margin-left 0.3s ease-in-out;", if sidebar_hidden() { "-20" } else { "0" }),
 
             nav {

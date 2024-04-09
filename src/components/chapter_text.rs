@@ -24,7 +24,7 @@ pub fn ChapterText(
             if let Some(curr_bible) = bible() {
                 if let Some(chapter) = curr_bible.get_current_chapter() {
                     div {
-                        class: format!("max-w-3xl prose-stone no-scrollbar text-{}", theme.prim_50),
+                        class: format!("max-w-3xl prose-stone text-{}", theme.prim_50),
                         {
                             chapter.verses.iter().map(|verse| {
                                 let is_smart_verse = smart_verses().iter().any(|v| {
