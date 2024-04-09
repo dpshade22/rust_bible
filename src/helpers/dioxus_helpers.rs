@@ -5,6 +5,8 @@ use dioxus::prelude::*;
 #[derive(Debug, Clone)]
 // theme.rs
 pub struct Theme {
+    pub background: &'static str,
+    pub text: &'static str,
     pub prim_50: &'static str,
     pub prim_100: &'static str,
     pub prim_200: &'static str,
@@ -22,6 +24,8 @@ pub struct Theme {
 impl Theme {
     pub fn light() -> Self {
         Theme {
+            background: "bg-stone-50",
+            text: "text-stone-800",
             prim_50: "stone-50",
             prim_100: "stone-100",
             prim_200: "stone-200",
@@ -37,6 +41,8 @@ impl Theme {
     }
     pub fn rose() -> Self {
         Theme {
+            background: "bg-rose-50",
+            text: "text-rose-900",
             prim_50: "rose-900",
             prim_100: "rose-800",
             prim_200: "rose-700",
@@ -46,6 +52,23 @@ impl Theme {
             prim_600: "rose-300",
             prim_700: "rose-200",
             prim_800: "rose-100",
+            prim_900: "stone-50",
+            highlight_600: "orange-600",
+        }
+    }
+    pub fn dark() -> Self {
+        Theme {
+            background: "bg-stone-950",
+            text: "text-stone-50",
+            prim_50: "stone-900",
+            prim_100: "stone-800",
+            prim_200: "stone-700",
+            prim_300: "stone-600",
+            prim_400: "stone-500",
+            prim_500: "stone-400",
+            prim_600: "stone-300",
+            prim_700: "stone-200",
+            prim_800: "stone-100",
             prim_900: "stone-50",
             highlight_600: "orange-600",
         }

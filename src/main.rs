@@ -63,7 +63,7 @@ fn App() -> Element {
             LoadingScreen {}
         } else {
             div {
-                class: format!("flex flex-col max-w-screen sm:flex-row bg-{} text-{}", theme.prim_50, theme.prim_800),
+                class: format!("flex flex-col max-w-screen sm:flex-row {} {}", theme.background, theme.text),
                 // Focusable input to receive keyboard events
                 if sidebar_left () {
                     Sidebar {

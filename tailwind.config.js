@@ -8,11 +8,13 @@ module.exports = {
     "./dist/**/*.html",
   ],
   safelist: [{
-    pattern: /^(text|bg)-stone-(\d+)$/,
+    pattern: /^(text|bg)-[A-Za-z]+-(\d+)$/,
     variants: ['hover', 'focus'],
   }, {
     pattern: /^rounded-(r|l)-lg$/,
-  }, , 'text-gray-*', 'rotate-*', 'whitespace-nowrap', 'rounded-b-lg', 'no-scrollbar', 'hidden'],
+  }, {
+    pattern: /^m[A-Za-z]-(\d+)$/,
+  }, 'text-gray-*', 'rotate-*', 'whitespace-nowrap', 'rounded-b-lg', 'no-scrollbar', 'hidden'],
   theme: {
     extend: {
 
