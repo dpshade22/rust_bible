@@ -1646,6 +1646,10 @@ video {
   height: 100vh;
 }
 
+.h-1\/4 {
+  height: 25%;
+}
+
 .max-h-64 {
   max-height: 16rem;
 }
@@ -1659,16 +1663,28 @@ video {
   max-height: 100vh;
 }
 
+.max-h-10 {
+  max-height: 2.5rem;
+}
+
+.max-h-10\% {
+  max-height: 10%;
+}
+
 .w-14 {
   width: 3.5rem;
 }
 
-.w-50\% {
-  width: 50%;
-}
-
 .w-6 {
   width: 1.5rem;
+}
+
+.w-60 {
+  width: 15rem;
+}
+
+.w-60\% {
+  width: 60%;
 }
 
 .w-8 {
@@ -1677,6 +1693,18 @@ video {
 
 .w-full {
   width: 100%;
+}
+
+.w-1\/4 {
+  width: 25%;
+}
+
+.w-1\/2 {
+  width: 50%;
+}
+
+.w-4 {
+  width: 1rem;
 }
 
 .max-w-3xl {
@@ -1713,6 +1741,10 @@ video {
           appearance: none;
 }
 
+.flex-row {
+  flex-direction: row;
+}
+
 .flex-col {
   flex-direction: column;
 }
@@ -1723,6 +1755,10 @@ video {
 
 .items-center {
   align-items: center;
+}
+
+.justify-start {
+  justify-content: flex-start;
 }
 
 .justify-center {
@@ -3103,6 +3139,11 @@ video {
   padding-bottom: 0.5rem;
 }
 
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
 .py-6 {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
@@ -3124,6 +3165,14 @@ video {
   padding-top: 0.5rem;
 }
 
+.pl-2 {
+  padding-left: 0.5rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
 .text-right {
   text-align: right;
 }
@@ -3132,8 +3181,24 @@ video {
   text-align: justify;
 }
 
+.text-end {
+  text-align: end;
+}
+
 .align-middle {
   vertical-align: middle;
+}
+
+.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.font-sans {
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.font-serif {
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
 .text-4xl {
@@ -3151,6 +3216,25 @@ video {
   line-height: 1.25rem;
 }
 
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+.font-black {
+  font-weight: 900;
+}
+
 .font-bold {
   font-weight: 700;
 }
@@ -3159,8 +3243,28 @@ video {
   font-weight: 800;
 }
 
+.font-extralight {
+  font-weight: 200;
+}
+
+.font-light {
+  font-weight: 300;
+}
+
 .font-medium {
   font-weight: 500;
+}
+
+.font-normal {
+  font-weight: 400;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-thin {
+  font-weight: 100;
 }
 
 .lowercase {
@@ -9850,6 +9954,14 @@ input[type="number"]:focus {
     margin-right: 0.75rem;
   }
 
+  .md\:ml-1 {
+    margin-left: 0.25rem;
+  }
+
+  .md\:block {
+    display: block;
+  }
+
   .md\:flex {
     display: flex;
   }
@@ -9860,6 +9972,33 @@ input[type="number"]:focus {
 
   .md\:w-60 {
     width: 15rem;
+  }
+
+  .md\:w-6 {
+    width: 1.5rem;
+  }
+
+  .md\:w-8 {
+    width: 2rem;
+  }
+
+  .md\:py-4 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .md\:pl-4 {
+    padding-left: 1rem;
+  }
+
+  .md\:text-3xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+
+  .md\:text-4xl {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
   }
 }
 

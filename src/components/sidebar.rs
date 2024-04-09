@@ -18,14 +18,14 @@ pub fn Sidebar(
 
     rsx! {
         button {
-            class: format!("sidebar-toggle bg-{} hover:bg-{} hover:transition-all sm:hidden md:flex {}", theme.prim_400, theme.prim_300, if sidebar_hidden() { "collapsed" } else { "" }),
+            class: format!("sidebar-toggle bg-{} hover:bg-{} hover:transition-all hidden {}", theme.prim_200, theme.prim_300, if sidebar_hidden() { "collapsed" } else { "" }),
             style: format!("position: absolute; {}: {}rem;", if sidebar_left() {"left"} else {"right"}, if sidebar_hidden() {"0"} else {"15"}),
             onclick: move |_| {
                 sidebar_hidden.set(!sidebar_hidden());
             },
         }
         div {
-            class: format!("bg-{} snap-end max-h-screen overflow-y-auto no-scrollbar {}", theme.prim_100, if sidebar_hidden() { "hidden" } else { "md:w-60"}),
+            class: format!("bg-{} snap-end max-h-screen hidden overflow-y-auto no-scrollbar {}", theme.prim_100, if sidebar_hidden() { "hidden" } else { "md:block md:w-60"}),
             nav {
                 div {
                     class: "flex-1 grid items-start py-2 text-sm font-medium",
@@ -59,7 +59,7 @@ pub fn Sidebar(
                                             }
                                         }
                                         input {
-                                            class: format!("rounded-{}-lg w-14 m{}-4 px-2 py-2 cursor-pointer text-{} text-right bg-{} appearance-none outline-bg-{}", sidebar_padding_side, sidebar_padding_side, theme.prim_800, theme.prim_300, theme.prim_600),
+                                            class: format!("rounded-{}-lg w-14 m{}-4 px-2 py-2 cursor-pointer text-{} text-right bg-{} appearance-none outline-bg-{}", sidebar_padding_side, sidebar_padding_side, theme.text, theme.prim_300, theme.prim_600),
                                             r#type: "number",
                                             maxlength: "3",
                                             value: entered_chapter_num,

@@ -20,7 +20,7 @@ pub fn ChapterText(
 
     rsx! {
         div {
-            class: format!("my-4 {}", if sidebar_hidden() { "flex justify-center items-center mr-4" } else { "md:mx-3 sm:mx-4" }),
+            class: format!("my-4 {}", if sidebar_hidden() { "flex justify-center items-center mr-4" } else { "mx-4" }),
             if let Some(curr_bible) = bible() {
                 if let Some(chapter) = curr_bible.get_current_chapter() {
                     div {
@@ -39,11 +39,11 @@ pub fn ChapterText(
                                     div {
                                         class: "flex items-start line",
                                         div {
-                                            class: format!("w-8 flex-shrink-0 text-{} text-right py-2  mr-2 font-bold", theme.prim_400),
+                                            class: format!("w-4 md:w-8 flex-shrink-0 text-{} text-right md:pl-4 py-2 mr-1 font-bold", theme.prim_400),
                                             "{verse.verse_num}"
                                         }
                                         p {
-                                            class: "{class} flex-grow pl-4 pt-1 leading-loose",
+                                            class: "{class} flex-grow pl-2 md:pl-4 pt-1 leading-loose",
                                             "{verse_cleaning(verse.text.to_string())}"
                                         }
                                     }

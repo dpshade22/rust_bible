@@ -85,13 +85,29 @@ pub fn ChapterNav(
         }
     }
 
+    let retrieve_chapter_event = || match bible() {
+        Some(temp_bible) => Some(
+            temp_bible
+                .get_current_chapter()
+                .unwrap()
+                .events
+                .first()
+                .unwrap_or(&"".to_string())
+                .clone(),
+        ),
+        None => {
+            error!("No Bible found when looking for chapter event");
+            None
+        }
+    };
+
     rsx! {
-        div { class: format!(
-                "flex py-6 items-center w-full {}",
-                if sidebar_hidden() { "justify-center" } else { "" },
-            ),
+        div {
+            class: format!(
+                "flex py-6 items-center w-full h-1/4 {}",
+                if sidebar_hidden() { "justify-center" } else { "" }),
             button {
-                class: format!("text-{} hover:text-{} order-1", theme.prim_500, theme.prim_700),
+                class: format!("text-{} hover:text-{} pl-4 order-1", theme.prim_500, theme.prim_700),
                 onclick: move |_| {
                     handle_chapter_navigation(
                         ChapterNavigationDirection::Previous,
@@ -114,21 +130,32 @@ pub fn ChapterNav(
                     }
                 }
             }
-            button {
-                class: format!(
-                    "flex text-justify text-4xl font-extrabold tracking-tight sm:text-xl lg:text-5xl mx-4 w-50% order-2 py-2 {}",
-                    if sidebar_hidden() { "justify-center transition-all" } else { "pl-4" },
-                ),
-                onclick: move |_| {
-                    handle_chapter_navigation(
-                        ChapterNavigationDirection::One,
-                        bible,
-                        current_chapter,
-                        current_chapter_text,
-                        entered_chapter_num,
-                    );
-                },
-                h1 { class: format!("text-{}", theme.prim_700), "{current_chapter}" }
+            div {
+                class: format!("flex flex-col w-60% order-2 mx-4 {}",
+                    if sidebar_hidden() { "justify-center transition-all" } else { "justify-start" }),
+
+                button {
+                    class: format!(
+                        "text-3xl font-extrabold tracking-tight py-2 md:pl-4 md:py-4 md:text-4xl lg:text-5xl  {}",
+                        if sidebar_hidden() { "justify-center" } else { "text-justify" },
+                    ),
+                    onclick: move |_| {
+                        handle_chapter_navigation(
+                            ChapterNavigationDirection::One,
+                            bible,
+                            current_chapter,
+                            current_chapter_text,
+                            entered_chapter_num,
+                        );
+                    },
+                    h1 { class: format!("text-{}", theme.prim_700), "{current_chapter}" }
+                }
+                if let Some(event) = retrieve_chapter_event() {
+                    h2 {
+                        class: format!("text-{} md:ml-1 font-medium {}", theme.prim_400, if sidebar_hidden() { "justify-center text-center" } else { "text-justify" }),
+                        "{event}"
+                    }
+                }
             }
             button {
                 class: format!("text-{} hover:text-{} order-3", theme.prim_500, theme.prim_700),

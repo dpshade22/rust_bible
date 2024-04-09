@@ -14,7 +14,11 @@ module.exports = {
     pattern: /^rounded-(r|l)-lg$/,
   }, {
     pattern: /^m[A-Za-z]-(\d+)$/,
-  }, 'text-gray-*', 'rotate-*', 'whitespace-nowrap', 'rounded-b-lg', 'no-scrollbar', 'hidden'],
+  }, {
+    pattern: /^font-[A-Za-z]+$/,
+  },
+
+    'text-gray-*', 'rotate-*', 'whitespace-nowrap', 'rounded-b-lg', 'no-scrollbar', 'hidden'],
   theme: {
     extend: {
 
