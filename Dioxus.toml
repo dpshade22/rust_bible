@@ -1,5 +1,5 @@
 [application]
-name = "Rusty Bible"
+name = "TheBibleInStone"
 # Currently supported platforms: web, desktop
 default_platform = "web"
 out_dir = "dist"
@@ -7,7 +7,7 @@ asset_dir = "public"
 
 [web.app]
 # HTML title tag content
-title = "Rusty Bible"
+title = "TheBibleInStone"
 
 [web.watcher]
 reload_html = true

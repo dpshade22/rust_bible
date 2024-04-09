@@ -152,7 +152,7 @@ pub fn ChapterNav(
                 }
                 if let Some(event) = retrieve_chapter_event() {
                     h2 {
-                        class: format!("text-{} md:ml-1 font-medium {}", theme.prim_400, if sidebar_hidden() { "justify-center text-center" } else { "text-justify" }),
+                        class: format!("text-{} md:ml-1 md:pl-4 font-medium {}", theme.prim_400, if sidebar_hidden() { "justify-center text-center" } else { "text-justify" }),
                         "{event}"
                     }
                 }

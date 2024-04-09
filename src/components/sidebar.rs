@@ -59,7 +59,7 @@ pub fn Sidebar(
                                             }
                                         }
                                         input {
-                                            class: format!("rounded-{}-lg w-14 m{}-4 px-2 py-2 cursor-pointer text-{} text-right bg-{} appearance-none outline-bg-{}", sidebar_padding_side, sidebar_padding_side, theme.text, theme.prim_300, theme.prim_600),
+                                            class: format!("rounded-{}-lg w-14 m{}-4 px-2 py-2 cursor-pointer {} text-right bg-{} appearance-none outline-bg-{}", sidebar_padding_side, sidebar_padding_side, theme.text, theme.prim_300, theme.prim_600),
                                             r#type: "number",
                                             maxlength: "3",
                                             value: entered_chapter_num,

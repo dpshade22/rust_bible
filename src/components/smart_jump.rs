@@ -79,31 +79,48 @@ fn SearchResults(
     let theme = use_context::<Theme>();
 
     rsx! {
-        div { class: "rounded-lg mt-2 overflow-y-auto max-h-64",
+        div {
+            class: "rounded-lg mt-2 overflow-y-auto max-h-64 relative",
 
-            for verse in smart_verses() {
-                div { class: "flex flex-col justify-center w-full bg-white px-4 py-2 max-h-fit hover:bg-stone-50",
+            // Top gradient fade
+            div {
+                class: "absolute top-0 left-0 right-0 h-4 pointer-events-none",
+                style: "background: linear-gradient(to bottom, white, transparent);"
+            }
 
-                    button {
-                        class: "rounded-lg",
-                        onclick: move |_| {
-                            if let Some(temp_bible) = bible() {
-                                update_bible(
-                                    bible,
-                                    temp_bible,
-                                    current_chapter,
-                                    current_chapter_text,
-                                    entered_chapter_num,
-                                    &verse.get_chapter(),
-                                );
-                            }
-                            show_jump.set(false);
-                        },
-                        p { class: "font-medium", "{verse.get_pretty_verse()}" }
-                        p { class: "italic", "{verse.text}" }
+            div {
+                class: "overflow-y-auto max-h-64",
+                for verse in smart_verses() {
+                    div {
+                        class: "flex flex-col justify-center w-full bg-white px-4 py-2 max-h-fit hover:bg-stone-50",
+
+                        button {
+                            class: "rounded-lg",
+                            onclick: move |_| {
+                                if let Some(temp_bible) = bible() {
+                                    update_bible(
+                                        bible,
+                                        temp_bible,
+                                        current_chapter,
+                                        current_chapter_text,
+                                        entered_chapter_num,
+                                        &verse.get_chapter(),
+                                    );
+                                }
+                                show_jump.set(false);
+                            },
+                            p { class: "font-medium", "{verse.get_pretty_verse()}" }
+                            p { "{verse.text}" }
+                        }
                     }
+                    hr {}
                 }
-                hr {}
+            }
+
+            // Bottom gradient fade
+            div {
+                class: "absolute bottom-0 left-0 right-0 h-4 pointer-events-none",
+                style: "background: linear-gradient(to top, white, transparent);"
             }
         }
     }
