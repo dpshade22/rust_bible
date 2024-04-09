@@ -20,7 +20,7 @@ pub fn ChapterText(
 
     rsx! {
         div {
-            class: format!("my-4 {}", if sidebar_hidden() { "flex justify-center items-center" } else { "md:mx-2 sm:mx-6" }),
+            class: format!("my-4 {}", if sidebar_hidden() { "flex justify-center items-center mr-4" } else { "mx-6" }),
             if let Some(curr_bible) = bible() {
                 if let Some(chapter) = curr_bible.get_current_chapter() {
                     div {
@@ -33,7 +33,7 @@ pub fn ChapterText(
                                 let class = if is_smart_verse {
                                     "text-orange-600 font-medium"
                                 } else {
-                                    ""
+                                    "text-stone-800"
                                 };
                                 rsx! {
                                     div {

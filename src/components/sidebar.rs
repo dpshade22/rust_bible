@@ -6,6 +6,7 @@ use log::debug;
 #[component]
 pub fn Sidebar(
     sidebar_hidden: Signal<bool>,
+    sidebar_left: Signal<bool>,
     bible: Signal<Option<Bible>>,
     unique_books: Signal<Vec<String>>,
     current_chapter: Signal<String>,
@@ -13,21 +14,21 @@ pub fn Sidebar(
     entered_chapter_num: Signal<String>,
 ) -> Element {
     let theme = use_context::<Theme>();
+    let sidebar_padding_side = if sidebar_left() { "l" } else { "r" };
 
     rsx! {
         button {
             class: format!("sidebar-toggle bg-{} hover:bg-{} hover:transition-all sm:hidden md:flex {}", theme.prim_400, theme.prim_300, if sidebar_hidden() { "collapsed" } else { "" }),
-            style: format!("position: absolute; right: {}rem;", if sidebar_hidden() {"0"} else {"15"}),
+            style: format!("position: absolute; {}: {}rem;", if sidebar_left() {"left"} else {"right"}, if sidebar_hidden() {"0"} else {"15"}),
             onclick: move |_| {
                 sidebar_hidden.set(!sidebar_hidden());
             },
         }
         div {
-            class: format!("bg-{} snap-end max-h-screen overflow-y-auto no-scrollbar {}", theme.prim_100, if sidebar_hidden() { "hidden" } else { "sm:w-full md:w-60"}),
-
+            class: format!("bg-{} snap-end max-h-screen overflow-y-auto no-scrollbar {}", theme.prim_100, if sidebar_hidden() { "hidden" } else { "md:w-60"}),
             nav {
                 div {
-                    class: "flex-1 grid items-start py-2 text-sm font-medium no-scrollbar",
+                    class: "flex-1 grid items-start py-2 text-sm font-medium",
                     if let Some(curr_bible) = bible() {
                         for book in unique_books() {
                             button {
@@ -50,13 +51,15 @@ pub fn Sidebar(
                                 },
                                 if curr_bible.get_current_chapter().map_or(false, |chapter| chapter.book == book) {
                                     div {
-                                        class: format!("rounded-r-lg flex justify-between align-middle text-base pl-3 text-white bg-{}", theme.prim_700),
-                                        strong {
-                                            class: "flex items-center",
-                                            "{book.to_uppercase()}"
+                                        class: format!("flex justify-between align-middle text-base p{}-4 text-white bg-{}", sidebar_padding_side, theme.prim_700),
+                                        if sidebar_left() {
+                                            strong {
+                                                class: "flex items-center",
+                                                "{book.to_uppercase()}"
+                                            }
                                         }
                                         input {
-                                            class: format!("rounded-l-lg w-14 ml-4 px-2 py-2 cursor-pointer text-{} text-right bg-{} appearance-none outline-bg-{}", theme.prim_800, theme.prim_300, theme.prim_600),
+                                            class: format!("rounded-{}-lg w-14 m{}-4 px-2 py-2 cursor-pointer text-{} text-right bg-{} appearance-none outline-bg-{}", sidebar_padding_side, sidebar_padding_side, theme.prim_800, theme.prim_300, theme.prim_600),
                                             r#type: "number",
                                             maxlength: "3",
                                             value: entered_chapter_num,
@@ -82,10 +85,16 @@ pub fn Sidebar(
                                                 }
                                             }
                                         }
+                                        if !sidebar_left() {
+                                            strong {
+                                                class: "flex items-center pr-4",
+                                                "{book.to_uppercase()}"
+                                            }
+                                        }
                                     }
                                 } else {
                                     div {
-                                        class: format!("py-2 hover:bg-{}", theme.prim_300),
+                                        class: format!("py-2 hover:bg-{} text-{}", theme.prim_300, theme.prim_900),
                                         "{book}"
                                     }
                                 }

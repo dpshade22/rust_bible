@@ -60,7 +60,7 @@ pub fn SmartJump(
                         entered_chapter_num
                     }
 
-                    TranslationDropdown { selected_translation, show_dropdown }
+                    // TranslationDropdown { selected_translation, show_dropdown }
                 }
             }
         }

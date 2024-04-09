@@ -7,9 +7,15 @@ module.exports = {
     // include all html files in the output (dist) directory
     "./dist/**/*.html",
   ],
-  safelist: ['bg-gray-*', 'bg-slate-*', 'bg-*', 'text-*', 'text-gray-*', 'rotate-*', 'whitespace-nowrap', 'rounded-b-lg', 'no-scrollbar', 'hidden'],
+  safelist: [{
+    pattern: /^(text|bg)-stone-(\d+)$/,
+    variants: ['hover', 'focus'],
+  }, {
+    pattern: /^rounded-(r|l)-lg$/,
+  }, , 'text-gray-*', 'rotate-*', 'whitespace-nowrap', 'rounded-b-lg', 'no-scrollbar', 'hidden'],
   theme: {
     extend: {
+
       animation: {
         'spin-slow': 'spin 3s linear infinite',
       },

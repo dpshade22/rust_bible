@@ -31,6 +31,7 @@ fn App() -> Element {
     let search_text = use_signal(|| "".to_string());
     let selected_translation = use_signal(|| "ESV".to_string());
     let sidebar_hidden: Signal<bool> = use_signal(|| false);
+    let sidebar_left: Signal<bool> = use_signal(|| true);
     let mut unique_books = use_signal(|| vec![]);
     let theme = use_context_provider(|| Theme::light());
 
@@ -62,9 +63,20 @@ fn App() -> Element {
             LoadingScreen {}
         } else {
             div {
-                class: format!("flex flex-col max-w-screen sm:flex-row bg-{} text-{}", theme.prim_50, theme.prim_50),
+                class: format!("flex flex-col max-w-screen sm:flex-row bg-{} text-{}", theme.prim_50, theme.prim_800),
                 // Focusable input to receive keyboard events
-                div { class: "flex-1 max-h-screen overflow-y-auto no-scrollbar",
+                if sidebar_left () {
+                    Sidebar {
+                        sidebar_hidden,
+                        sidebar_left,
+                        bible,
+                        unique_books,
+                        current_chapter,
+                        current_chapter_text,
+                        entered_chapter_num
+                    }
+                }
+                div { class: format!("flex-1 max-h-screen overflow-y-auto {}", if !sidebar_left() {"no-scrollbar"} else {""}),
                     div { class: "flex px-4 pt-2",
                         ChapterNav {
                             sidebar_hidden,
@@ -78,13 +90,16 @@ fn App() -> Element {
                     hr {}
                     ChapterText { sidebar_hidden, bible, smart_verses }
                 }
-                Sidebar {
-                    sidebar_hidden,
-                    bible,
-                    unique_books,
-                    current_chapter,
-                    current_chapter_text,
-                    entered_chapter_num
+                if !sidebar_left () {
+                    Sidebar {
+                        sidebar_hidden,
+                        sidebar_left,
+                        bible,
+                        unique_books,
+                        current_chapter,
+                        current_chapter_text,
+                        entered_chapter_num
+                    }
                 }
                 SmartJump {
                     bible,

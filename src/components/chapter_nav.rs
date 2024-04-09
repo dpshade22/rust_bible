@@ -128,7 +128,7 @@ pub fn ChapterNav(
                         entered_chapter_num,
                     );
                 },
-                h1 { class: format!("text-{}", theme.prim_800), "{current_chapter}" }
+                h1 { class: format!("text-{}", theme.prim_700), "{current_chapter}" }
             }
             button {
                 class: format!("text-{} hover:text-{} order-3", theme.prim_500, theme.prim_700),
@@ -156,7 +156,7 @@ pub fn ChapterNav(
             }
         }
         button {
-            class: "sticky top-4 float-right p-2 rounded-full focus:outline-none",
+            class: format!("sticky top-4 float-right p-2 rounded-full focus:outline-none text-{}", theme.prim_600),
             onclick: move |_| show_jump.set(!show_jump()),
             svg {
                 xmlns: "http://www.w3.org/2000/svg",
