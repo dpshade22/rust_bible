@@ -17,14 +17,13 @@ pub fn Sidebar(
     rsx! {
         button {
             class: format!("sidebar-toggle bg-{} hover:bg-{} hover:transition-all sm:hidden md:flex {}", theme.prim_400, theme.prim_300, if sidebar_hidden() { "collapsed" } else { "" }),
-            style: format!("position: absolute; left: {}rem; transition: left 0.3s ease-in-out;", if sidebar_hidden() { "0" } else { "15" }),
+            style: format!("position: absolute; right: {}rem;", if sidebar_hidden() {"0"} else {"15"}),
             onclick: move |_| {
                 sidebar_hidden.set(!sidebar_hidden());
             },
         }
         div {
-            class: format!("bg-{} sm:max-h-fit snap-end md:max-h-screen md:overflow-y-auto md:no-scrollbar {}", theme.prim_100, if sidebar_hidden() { "" } else { "sm:w-full md:w-60"}),
-            style: format!("margin-left: {}rem; transition: margin-left 0.3s ease-in-out;", if sidebar_hidden() { "-20" } else { "0" }),
+            class: format!("bg-{} snap-end max-h-screen overflow-y-auto no-scrollbar {}", theme.prim_100, if sidebar_hidden() { "hidden" } else { "sm:w-full md:w-60"}),
 
             nav {
                 div {

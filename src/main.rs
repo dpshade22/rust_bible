@@ -62,17 +62,9 @@ fn App() -> Element {
             LoadingScreen {}
         } else {
             div {
-                class: format!("flex w-full flex-col sm:flex-row bg-{} text-{}", theme.prim_50, theme.prim_50),
+                class: format!("flex flex-col max-w-screen sm:flex-row bg-{} text-{}", theme.prim_50, theme.prim_50),
                 // Focusable input to receive keyboard events
-                Sidebar {
-                    sidebar_hidden,
-                    bible,
-                    unique_books,
-                    current_chapter,
-                    current_chapter_text,
-                    entered_chapter_num
-                }
-                div { class: "flex-1 max-h-screen overflow-y-auto",
+                div { class: "flex-1 max-h-screen overflow-y-auto no-scrollbar",
                     div { class: "flex px-4 pt-2",
                         ChapterNav {
                             sidebar_hidden,
@@ -85,6 +77,14 @@ fn App() -> Element {
                     }
                     hr {}
                     ChapterText { sidebar_hidden, bible, smart_verses }
+                }
+                Sidebar {
+                    sidebar_hidden,
+                    bible,
+                    unique_books,
+                    current_chapter,
+                    current_chapter_text,
+                    entered_chapter_num
                 }
                 SmartJump {
                     bible,
