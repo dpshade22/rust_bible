@@ -3,6 +3,8 @@ use crate::helpers::*;
 use crate::models::*;
 use dioxus::prelude::*;
 use log::{debug, error};
+use std::path::Path;
+use tantivy::{doc, Index};
 
 #[component]
 pub fn SmartJump(
@@ -211,15 +213,19 @@ fn handle_input(
                 current_chapter_text,
                 entered_chapter_num,
             ),
-            Some((_, _, _, _, remaining_query)) => handle_keyword(
-                &remaining_query,
-                curr_bible,
-                smart_verses,
-                bible,
-                current_chapter,
-                current_chapter_text,
-                entered_chapter_num,
-            ),
+            Some((_, _, _, _, remaining_query)) => {
+                if let Ok(()) = handle_tantivy_smart_verses(
+                    &remaining_query,
+                    curr_bible,
+                    smart_verses,
+                    bible,
+                    current_chapter,
+                    current_chapter_text,
+                    entered_chapter_num,
+                ) {
+                    debug!("Tantivy found some verses...");
+                }
+            }
             None => {
                 debug!("No match found");
             }
@@ -329,32 +335,28 @@ fn handle_book_keyword(
     }
 }
 
-fn handle_keyword(
-    remaining_query: &str,
-    curr_bible: Bible,
-    mut smart_verses: Signal<Vec<Verse>>,
-    bible: Signal<Option<Bible>>,
-    current_chapter: Signal<String>,
-    current_chapter_text: Signal<String>,
-    entered_chapter_num: Signal<String>,
-) {
-    debug!("Trying keyword search");
-    if !remaining_query.trim().is_empty() {
-        smart_verses.set(keyword_search(&curr_bible, &remaining_query, None));
+// fn handle_keyword(
+//     remaining_query: &str,
+//     curr_bible: Bible,
+//     mut smart_verses: Signal<Vec<Verse>>,
+//     bible: Signal<Option<Bible>>,
+//     current_chapter: Signal<String>,
+//     current_chapter_text: Signal<String>,
+//     entered_chapter_num: Signal<String>,
+// ) -> anyhow::Result<Vec<String>> {
+//     debug!("Trying keyword search");
+//     // Path to store the Tantivy index
+//     let index_path = Path::new("./assets/index");
 
-        if !smart_verses.is_empty() {
-            let chapter_ref = &smart_verses.first().unwrap().get_chapter();
-            update_bible(
-                bible,
-                curr_bible,
-                current_chapter,
-                current_chapter_text,
-                entered_chapter_num,
-                &chapter_ref,
-            );
-        }
-    }
-}
+//     let schema = create_verse_schema();
+//     let index = Index::open_in_dir(index_path)?;
+//     let reader = index.reader()?;
+
+//     // Perform a sample search
+//     let query = "birth control";
+//     println!("Searching for: {}", query);
+//     query_verses(&reader, &schema, query)
+// }
 
 // Declared here due to being non-UI helper function
 fn parse_chapter_ref(chapter_ref: &str) -> String {
@@ -365,6 +367,56 @@ fn parse_chapter_ref(chapter_ref: &str) -> String {
     } else {
         chapter_ref.to_string()
     }
+}
+
+fn handle_tantivy_smart_verses(
+    remaining_query: &str,
+    curr_bible: Bible,
+    mut smart_verses: Signal<Vec<Verse>>,
+    bible: Signal<Option<Bible>>,
+    current_chapter: Signal<String>,
+    current_chapter_text: Signal<String>,
+    entered_chapter_num: Signal<String>,
+) -> anyhow::Result<()> {
+    let index_path = Path::new("./assets/index");
+
+    let schema = create_verse_schema();
+    let index = Index::open_in_dir(index_path)?;
+    let reader = index.reader()?;
+
+    // Perform a sample search
+
+    println!("Searching for: {}", remaining_query);
+    let verse_results = query_verses(&reader, &schema, remaining_query)?;
+
+    let mut verses = vec![];
+
+    for r#ref in verse_results.iter() {
+        for chapter in &curr_bible.chapters {
+            if let Some(verse) = chapter.verses.iter().find(|v| &v.r#ref == r#ref) {
+                verses.push(verse.clone());
+                break;
+            }
+        }
+    }
+
+    if !verses.is_empty() {
+        smart_verses.set(verses);
+    }
+
+    if !smart_verses.is_empty() {
+        let chapter_ref = &smart_verses.first().unwrap().get_chapter();
+        update_bible(
+            bible,
+            curr_bible,
+            current_chapter,
+            current_chapter_text,
+            entered_chapter_num,
+            &chapter_ref,
+        );
+    }
+
+    Ok(())
 }
 
 fn find_smart_verses(bible: &Bible, chapter_ref: &str) -> Vec<Verse> {

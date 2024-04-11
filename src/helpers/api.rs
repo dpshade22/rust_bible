@@ -1,5 +1,6 @@
 use crate::models::{Bible, Verse};
 use anyhow::{Context, Result};
+
 use serde_json;
 
 pub async fn fetch_verses_from_url(url: &str) -> Result<Bible> {
