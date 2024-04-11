@@ -4,6 +4,7 @@ use crate::models::*;
 use dioxus::prelude::*;
 use log::{debug, error};
 use std::path::Path;
+use tantivy::directory::MmapDirectory;
 use tantivy::{doc, Index};
 
 #[component]
@@ -379,9 +380,10 @@ fn handle_tantivy_smart_verses(
     entered_chapter_num: Signal<String>,
 ) -> anyhow::Result<()> {
     let index_path = Path::new("./assets/index");
+    let directory = MmapDirectory::open(&index_path)?;
 
     let schema = create_verse_schema();
-    let index = Index::open_in_dir(index_path)?;
+    let index = Index::open(directory)?;
     let reader = index.reader()?;
 
     // Perform a sample search

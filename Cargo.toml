@@ -6,6 +6,9 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+tantivy = { git = "https://github.com/quickwit-oss/tantivy/", rev = "4e79e11007b6c9fc3d3965beefe33e1ffcf641d3", default-features = false, features = [
+    "mmap",
+] }
 phf = { version = "0.11.2", features = ["macros"] }
 anyhow = "1.0.81"
 itertools = "0.12.1"
@@ -19,8 +22,6 @@ wasm-logger = "0.2.0"
 web-sys = "0.3.69"
 dioxus = { version = "0.5.1" }
 getrandom = { version = "0.2", features = ["js"] }
-tantivy = { git = "https://github.com/quickwit-oss/tantivy/", rev = "4e79e11007b6c9fc3d3965beefe33e1ffcf641d3" }
-tempfile = "3.10.1"
 
 [features]
 desktop = ["dioxus/desktop"]

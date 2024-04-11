@@ -41,7 +41,7 @@ fn App() -> Element {
         // TODO: Handle error case better if fetch fails
 
         if let Some(bible_url) = TRANSLATIONS.get(&selected_translation()) {
-            if let Ok(fetched_bible) = fetch_verses_from_url(&bible_url).await {
+            if let Ok(fetched_bible) = fetch_verses_from_url(bible_url).await {
                 unique_books.set(fetched_bible.get_unique_books());
 
                 update_bible(
