@@ -1,0 +1,36 @@
+{
+    "manifest": "arweave/paths",
+    "version": "0.1.0",
+    "index": {
+        "path": "index.html"
+    },
+    "paths": {
+        "assets/dioxus/snippets/dioxus-web-84af743b887ebc54/inline0.js": {
+            "id": "djZQK_xN3caJo9GM_jwcgFfiVMOhGIsGeZeXXRojFVc"
+        },
+        "assets/dioxus/snippets/dioxus-web-84af743b887ebc54/src/eval.js": {
+            "id": "_RSC5_tqboNnTX9QUO4uHrCHDVxugb5j7mCubP_cEZQ"
+        },
+        "assets/dioxus/snippets/dioxus-web-84af743b887ebc54/inline1.js": {
+            "id": "jfXJA4AEt7Fkx7x6HeZO4L_9O_IXKyS4Vg_hHJh_Wew"
+        },
+        "assets/dioxus/snippets/dioxus-interpreter-js-7c1300c6684e1811/src/js/common.js": {
+            "id": "AEf12hx5l1rgncR6ZywTZmvdIXKiLjHUe-DLHpomP-8"
+        },
+        "assets/dioxus/snippets/dioxus-interpreter-js-7c1300c6684e1811/inline0.js": {
+            "id": "8u7eWMuVj_Sy6auMyOn4aLSAb-90tM_pL-h_4kZ45wU"
+        },
+        "index.html": {
+            "id": "YLtMT1iaBmteZNAxP3pauQ0zrO7oTU3MhAuOrfjfu4s"
+        },
+        "tailwind.css": {
+            "id": "lw6vLBiJ_ZuOVp4eIzhij3x22vDglgBS9p8LvddwGeU"
+        },
+        "assets/dioxus/TheBibleInStone.js": {
+            "id": "BIaTZ_T-MnnSbyxz73Y0Zp7I_iEBISfMf79_I9PgSAg"
+        },
+        "assets/dioxus/TheBibleInStone_bg.wasm": {
+            "id": "TTjBM_9Pu7k1AJVCFhSL-qlhC4NFms80b5s2HsOWGZk"
+        }
+    }
+}

@@ -104,10 +104,10 @@ pub fn ChapterNav(
     rsx! {
         div {
             class: format!(
-                "flex py-6 items-center w-full h-1/4 {}",
+                "flex py-6 items-center w-full h-full {}",
                 if sidebar_hidden() { "justify-center" } else { "" }),
             button {
-                class: format!("text-{} hover:text-{} pl-4 order-1", theme.prim_500, theme.prim_700),
+                class: format!("text-{} h-full hover:text-{} pl-4 order-1", theme.prim_500, theme.prim_700),
                 onclick: move |_| {
                     handle_chapter_navigation(
                         ChapterNavigationDirection::Previous,
@@ -158,7 +158,7 @@ pub fn ChapterNav(
                 }
             }
             button {
-                class: format!("text-{} hover:text-{} order-3", theme.prim_500, theme.prim_700),
+                class: format!("text-{} h-full hover:text-{} order-3", theme.prim_500, theme.prim_700),
                 onclick: move |_| {
                     handle_chapter_navigation(
                         ChapterNavigationDirection::Next,
