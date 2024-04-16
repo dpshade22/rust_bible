@@ -1,7 +1,7 @@
 use crate::helpers::*;
 use crate::models::*;
 use dioxus::prelude::*;
-use log::debug;
+// use log::debug;
 
 #[component]
 pub fn ChapterText(

@@ -17,7 +17,7 @@ pub fn SmartJump(
     selected_translation: Signal<String>,
 ) -> Element {
     let theme = use_context::<Theme>();
-    let show_dropdown = use_signal(|| false);
+    // let show_dropdown = use_signal(|| false);
 
     rsx! {
         if show_jump() {
