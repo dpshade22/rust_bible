@@ -6,9 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tantivy = { git = "https://github.com/quickwit-oss/tantivy/", rev = "4e79e11007b6c9fc3d3965beefe33e1ffcf641d3", default-features = false, features = [
-    "mmap",
-] }
+tantivy = { version = "0.22.0", default-features = false, features = ["mmap"] }
 phf = { version = "0.11.2", features = ["macros"] }
 anyhow = "1.0.81"
 itertools = "0.12.1"
