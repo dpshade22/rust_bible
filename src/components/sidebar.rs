@@ -25,7 +25,7 @@ pub fn Sidebar(
             },
         }
         div {
-            class: format!("bg-{} snap-end max-h-screen hidden overflow-y-auto no-scrollbar {}", theme.prim_100, if sidebar_hidden() { "hidden" } else { "md:block md:w-60"}),
+            class: format!("sidebar-toggle bg-{} snap-end max-h-screen hidden overflow-y-auto no-scrollbar {}", theme.prim_100, if sidebar_hidden() { "hidden" } else { "md:block md:w-60"}),
             nav {
                 div {
                     class: "flex-1 grid items-start py-2 text-sm font-medium",

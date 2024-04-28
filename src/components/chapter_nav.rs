@@ -104,7 +104,7 @@ pub fn ChapterNav(
     rsx! {
         div {
             class: format!(
-                "flex py-6 items-center w-full h-full {}",
+                "flex py-6 items-center w-full max-h-screen h-full {}",
                 if sidebar_hidden() { "justify-center" } else { "" }),
             button {
                 class: format!("text-{} h-full hover:text-{} pl-4 order-1", theme.prim_500, theme.prim_700),

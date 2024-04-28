@@ -80,7 +80,7 @@ fn SearchResults(
 
     rsx! {
         div {
-            class: "rounded-lg mt-2 overflow-y-auto max-h-64 relative",
+            class: "rounded-lg mt-2 max-h-64 relative",
 
             // Top gradient fade
             div {

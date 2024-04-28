@@ -1658,10 +1658,6 @@ video {
   display: none;
 }
 
-.h-1\/4 {
-  height: 25%;
-}
-
 .h-4 {
   height: 1rem;
 }
@@ -4683,6 +4679,7 @@ input[type="number"]:focus {
 @media (max-width: 767px) {
   .sidebar-toggle {
     display: none;
+    overflow: hidden;
   }
 }
 
