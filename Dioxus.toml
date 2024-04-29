@@ -1,5 +1,5 @@
 [application]
-name = "TheBibleInStone"
+name = "The Bible In Stone"
 # Currently supported platforms: web, desktop
 default_platform = "web"
 out_dir = "dist"
@@ -19,6 +19,8 @@ style = [
     # Include from public_dir.
     "./public/tailwind.css",
 ]
+favicon = "./public/favicon.ico"
+
 
 [web.resource.dev]
 style = [

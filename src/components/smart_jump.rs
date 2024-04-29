@@ -59,8 +59,6 @@ pub fn SmartJump(
                         current_chapter_text,
                         entered_chapter_num
                     }
-
-                    // TranslationDropdown { selected_translation, show_dropdown }
                 }
             }
         }
@@ -79,8 +77,7 @@ fn SearchResults(
     let theme = use_context::<Theme>();
 
     rsx! {
-        div {
-            class: "rounded-lg mt-2 overflow-y-auto max-h-64 relative",
+        div { class: "rounded-lg mt-2 overflow-y-auto max-h-64 relative",
 
             // Top gradient fade
             div {
@@ -88,11 +85,9 @@ fn SearchResults(
                 style: "background: linear-gradient(to bottom, white, transparent);"
             }
 
-            div {
-                class: "overflow-y-auto max-h-64",
+            div { class: "overflow-y-auto max-h-64",
                 for verse in smart_verses() {
-                    div {
-                        class: "flex flex-col justify-center w-full bg-white px-4 py-2 max-h-fit hover:bg-stone-50",
+                    div { class: "flex flex-col justify-center w-full bg-white px-4 py-2 max-h-fit hover:bg-stone-50",
 
                         button {
                             class: "rounded-lg",
@@ -143,7 +138,11 @@ fn TranslationDropdown(
             }
 
             if show_dropdown() {
-                div { class: format!("border absolute bg-{} text-white shadow-md py-2 rounded-md mt-1", theme.prim_700),
+                div {
+                    class: format!(
+                        "border absolute bg-{} text-white shadow-md py-2 rounded-md mt-1",
+                        theme.prim_700,
+                    ),
 
                     for translation_key in TRANSLATIONS.keys() {
                         if translation_key.to_string() != selected_translation() {

@@ -105,7 +105,8 @@ pub fn ChapterNav(
         div {
             class: format!(
                 "flex py-6 items-center w-full h-full {}",
-                if sidebar_hidden() { "justify-center" } else { "" }),
+                if sidebar_hidden() { "justify-center" } else { "" },
+            ),
             button {
                 class: format!("text-{} h-full hover:text-{} pl-4 order-1", theme.prim_500, theme.prim_700),
                 onclick: move |_| {
@@ -131,8 +132,10 @@ pub fn ChapterNav(
                 }
             }
             div {
-                class: format!("flex flex-col w-60% order-2 mx-4 {}",
-                    if sidebar_hidden() { "justify-center transition-all" } else { "justify-start" }),
+                class: format!(
+                    "flex flex-col w-60% order-2 mx-4 {}",
+                    if sidebar_hidden() { "justify-center transition-all" } else { "justify-start" },
+                ),
 
                 button {
                     class: format!(
@@ -152,7 +155,11 @@ pub fn ChapterNav(
                 }
                 if let Some(event) = retrieve_chapter_event() {
                     h2 {
-                        class: format!("text-{} md:ml-1 md:pl-4 font-medium {}", theme.prim_400, if sidebar_hidden() { "justify-center text-center" } else { "text-justify" }),
+                        class: format!(
+                            "text-{} md:ml-1 md:pl-4 font-medium {}",
+                            theme.prim_400,
+                            if sidebar_hidden() { "justify-center text-center" } else { "text-justify" },
+                        ),
                         "{event}"
                     }
                 }
@@ -183,7 +190,10 @@ pub fn ChapterNav(
             }
         }
         button {
-            class: format!("sticky top-4 float-right p-2 rounded-full focus:outline-none text-{}", theme.prim_600),
+            class: format!(
+                "sticky top-4 float-right p-2 rounded-full focus:outline-none text-{}",
+                theme.prim_600,
+            ),
             onclick: move |_| show_jump.set(!show_jump()),
             svg {
                 xmlns: "http://www.w3.org/2000/svg",

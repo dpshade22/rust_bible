@@ -63,9 +63,13 @@ fn App() -> Element {
             LoadingScreen {}
         } else {
             div {
-                class: format!("flex flex-row max-w-screen min-h-screen touch-manipulation {} {}", theme.background, theme.text),
+                class: format!(
+                    "flex flex-row max-w-screen min-h-screen touch-manipulation {} {}",
+                    theme.background,
+                    theme.text,
+                ),
                 // Focusable input to receive keyboard events
-                if sidebar_left () {
+                if sidebar_left() {
                     Sidebar {
                         sidebar_hidden,
                         sidebar_left,
@@ -76,7 +80,11 @@ fn App() -> Element {
                         entered_chapter_num
                     }
                 }
-                div { class: format!("flex-1 max-h-screen overflow-y-auto {}", if !sidebar_left() {"no-scrollbar"} else {""}),
+                div {
+                    class: format!(
+                        "flex-1 max-h-screen overflow-y-auto {}",
+                        if !sidebar_left() { "no-scrollbar" } else { "" },
+                    ),
                     div { class: "flex px-4 pt-2",
                         ChapterNav {
                             sidebar_hidden,
@@ -90,7 +98,7 @@ fn App() -> Element {
                     hr {}
                     ChapterText { sidebar_hidden, bible, smart_verses }
                 }
-                if !sidebar_left () {
+                if !sidebar_left() {
                     Sidebar {
                         sidebar_hidden,
                         sidebar_left,

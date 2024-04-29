@@ -20,11 +20,13 @@ pub fn ChapterText(
 
     rsx! {
         div {
-            class: format!("my-4 {}", if sidebar_hidden() { "flex justify-center items-center mr-4" } else { "mx-4" }),
+            class: format!(
+                "my-4 {}",
+                if sidebar_hidden() { "flex justify-center items-center mr-4" } else { "mx-4" },
+            ),
             if let Some(curr_bible) = bible() {
                 if let Some(chapter) = curr_bible.get_current_chapter() {
-                    div {
-                        class: format!("max-w-3xl prose-stone text-{}", theme.prim_50),
+                    div { class: format!("max-w-3xl prose-stone text-{}", theme.prim_50),
                         {
                             chapter.verses.iter().map(|verse| {
                                 let is_smart_verse = smart_verses().iter().any(|v| {
