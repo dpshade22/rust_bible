@@ -1,5 +1,5 @@
 [application]
-name = "The Bible In Stone"
+name = "TheBibleInStone"
 # Currently supported platforms: web, desktop
 default_platform = "web"
 out_dir = "dist"

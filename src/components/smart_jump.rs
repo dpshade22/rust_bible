@@ -19,6 +19,23 @@ pub fn SmartJump(
     let theme = use_context::<Theme>();
     let show_dropdown = use_signal(|| false);
 
+    let mut q_loaded = use_signal(|| false);
+
+    if !q_loaded() && search_text() != "".to_string() {
+        handle_input(
+            show_jump,
+            smart_verses,
+            bible,
+            current_chapter,
+            current_chapter_text,
+            entered_chapter_num,
+            unique_books,
+            search_text,
+            selected_translation,
+        );
+        q_loaded.set(true);
+    }
+
     rsx! {
         if show_jump() {
             div { class: "fixed inset-0 flex items-center justify-center z-50",
@@ -38,17 +55,19 @@ pub fn SmartJump(
                         autofocus: true,
                         value: search_text,
                         oninput: move |evt| search_text.set(evt.value()),
-                        onchange: move |_| handle_input(
-                            show_jump,
-                            smart_verses,
-                            bible,
-                            current_chapter,
-                            current_chapter_text,
-                            entered_chapter_num,
-                            unique_books,
-                            search_text,
-                            selected_translation,
-                        )
+                        onchange: move |_| {
+                            handle_input(
+                                show_jump,
+                                smart_verses,
+                                bible,
+                                current_chapter,
+                                current_chapter_text,
+                                entered_chapter_num,
+                                unique_books,
+                                search_text,
+                                selected_translation,
+                            );
+                        }
                     }
 
                     SearchResults {
