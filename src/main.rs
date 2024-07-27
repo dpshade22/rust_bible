@@ -22,10 +22,10 @@ fn main() {
 #[derive(Routable, PartialEq, Clone)]
 // #[rustfmt::skip]
 enum Route {
-    #[route("/?:q")]
+    #[route("/search/:q")]
     QApp { q: String },
-    #[route("/")]
-    NoQApp {},
+    #[route("/:..route")]
+    NoQApp { route: Vec<String> },
 }
 
 #[component]
@@ -133,7 +133,7 @@ fn QApp(q: String) -> Element {
 }
 
 #[component]
-fn NoQApp() -> Element {
+fn NoQApp(route: Vec<String>) -> Element {
     let bible: Signal<Option<Bible>> = use_signal(|| None);
     let current_chapter = use_signal(|| "".to_string());
     let current_chapter_text = use_signal(|| "".to_string());

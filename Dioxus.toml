@@ -1,5 +1,5 @@
 [application]
-name = "TheBibleInStone"
+name = "ESV Bible"
 # Currently supported platforms: web, desktop
 default_platform = "web"
 out_dir = "dist"
@@ -7,7 +7,8 @@ asset_dir = "public"
 
 [web.app]
 # HTML title tag content
-title = "TheBibleInStone"
+title = "ESV Bible"
+favicon = "./favicon.ico"
 
 [web.watcher]
 reload_html = true
@@ -17,16 +18,17 @@ index_on_404 = true
 [web.resource]
 style = [
     # Include from public_dir.
-    "./public/tailwind.css",
+    "./tailwind.css",
 ]
-favicon = "./public/favicon.ico"
+favicon = "./favicon.ico"
 
 
 [web.resource.dev]
 style = [
     # Include from public_dir.
-    "./public/tailwind.css",
+    "./tailwind.css",
 ]
+favicon = "./favicon.ico"
 
 [[web.proxy]]
 backend = "http://localhost:8000/api/"

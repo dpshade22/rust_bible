@@ -16,7 +16,6 @@ serde = "1.0.197"
 serde_json = "1.0.114"
 sublime_fuzzy = "0.7.0"
 wasm-logger = "0.2.0"
-web-sys = "0.3.69"
 dioxus = { version = "0.5.0", features = ["router"] }
 
 [features]
